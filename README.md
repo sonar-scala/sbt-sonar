@@ -8,14 +8,9 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
  - [sonar-scanner](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) executable installed on your CI server or locally if you intend to run the analysis on your machine.
 
 ## Installation
-To install this plugin in your project, add the following resolver and plugin import statement to your `./project/plugins.sbt` file:
+To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-resolvers += Resolver.url(
-  "bintray-mwz-sbt-plugin-releases",
-  url("http://dl.bintray.com/mwz/sbt-plugin-releases")
-)(Resolver.ivyStylePatterns)
- 
 addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.1.0")
 ```
 
