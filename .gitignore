@@ -1,0 +1,11 @@
+# sbt
+.cache
+dist
+target
+
+# IntelliJ
+.idea
+
+# Other
+*.log
+*.orig
