@@ -11,15 +11,38 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.1.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.2.0")
 ```
 
 ## Usage
-Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` environmental variable and updated the global settings in `$SONAR_SCANNER_HOME/conf/sonar-scanner.properties` to point to your SonarQube instance. You will also need a `sonar-project.properties` config file in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner).
+Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` environmental variable and updated the global settings in `$SONAR_SCANNER_HOME/conf/sonar-scanner.properties` to point to your SonarQube instance. 
 
-To run the plugin, execute the `sonarScan` sbt task in your project. The plugin will update the `sonar.projectVersion` property in `sonar-project.properties` to your current project version and it will run the `sonar-scanner` executable printing the progress to sbt console.
+You can define your project properties either in the external config file `sonar-project.properties`, which should be located in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or directly in sbt. By default, the plugin expects the properties to be defined in the `sonarProperties` setting key in sbt, e.g.:
 
-This plugin can be also easilly used with the `sbt-release` by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
+```scala
+import sbt.Keys.name
+import sbtsonar.SonarPlugin.autoImport.sonarProperties
+ 
+sonarProperties := Map(
+  "sonar.projectKey" -> name.value,
+  "sonar.projectName" -> "Project Name",
+  "sonar.sources" -> "src/main/scala",
+  "sonar.sourceEncoding" -> "UTF-8",
+  "sonar.scoverage.reportPath" -> "target/scala-2.11/scoverage-report/scoverage.xml",
+  "sonar.scala.scapegoat.reportPath" -> "target/scala-2.11/scapegoat-report/scapegoat.xml"
+)
+```
+
+To use the `sonar-project.properties` file instead, you can set the `sonarUseExternalConfig` to `true`, e.g.:
+```scala
+import sbtsonar.SonarPlugin.autoImport.sonarUseExternalConfig
+ 
+sonarUseExternalConfig := true
+```
+
+To run the plugin, execute the `sonarScan` sbt task in your project. Depending on the configuration option you have chosen, the plugin will update the `sonar.projectVersion` property to your current project version either in `sonar-project.properties` file or in the `sonarProperties` in sbt config and it will run the `sonar-scanner` executable printing the progress to sbt console.
+
+This plugin can be also easily used with the `sbt-release` by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
 
 ```scala
 import sbtsonar.SonarPlugin.autoImport.sonarScan
@@ -32,6 +55,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **0.2.0** - Added the ability to define sonar project properties directly in sbt.
  * **0.1.0** - First release of the plugin :tada:!
 
 ## License
