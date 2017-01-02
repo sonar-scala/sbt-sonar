@@ -17,15 +17,32 @@ addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.2.0")
 ## Usage
 Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` environmental variable and updated the global settings in `$SONAR_SCANNER_HOME/conf/sonar-scanner.properties` to point to your SonarQube instance. 
 
-You can define your project properties either in the external config file `sonar-project.properties`, which should be located in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or directly in sbt. By default, the plugin expects the properties to be defined in the `sonarProperties` setting key in sbt, e.g.:
+You can define your project properties either in the external config file `sonar-project.properties`, which should be located in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or directly in sbt. By default, the plugin expects the properties to be defined in the `sonarProperties` setting key in sbt, which comes with the following set of predefined properties:
+
+ - *sonar.projectName* - your project name defined in the `name` sbt setting key.
+ - *sonar.projectKey* - your project name transformed into a lowercase and dash-separated value.
+ - *sonar.sourceEncoding* - UTF-8.
+ - *sonar.sources* - default Scala source directory relative to the root of your project (usually src/main/scala).
+
+If you wish to add more properties to the existing config e.g. to configure your Sonar plugins or set up multi-module project, use the `++=` operator, e.g.:
+ 
+```scala
+import sbtsonar.SonarPlugin.autoImport.sonarProperties
+ 
+sonarProperties ++= Map(
+  "sonar.scoverage.reportPath" -> "target/scala-2.11/scoverage-report/scoverage.xml",
+  "sonar.scala.scapegoat.reportPath" -> "target/scala-2.11/scapegoat-report/scapegoat.xml"
+)
+```
+
+To overwrite the entire config provided by default, use the `:=` operator, e.g.:
 
 ```scala
-import sbt.Keys.name
 import sbtsonar.SonarPlugin.autoImport.sonarProperties
  
 sonarProperties := Map(
-  "sonar.projectKey" -> name.value,
   "sonar.projectName" -> "Project Name",
+  "sonar.projectKey" -> "project-name",
   "sonar.sources" -> "src/main/scala",
   "sonar.sourceEncoding" -> "UTF-8",
   "sonar.scoverage.reportPath" -> "target/scala-2.11/scoverage-report/scoverage.xml",
@@ -55,6 +72,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **0.3.0** - Defined a set of default project settings in the `sonarProperties` config key.
  * **0.2.0** - Added the ability to define sonar project properties directly in sbt.
  * **0.1.0** - First release of the plugin :tada:!
 
