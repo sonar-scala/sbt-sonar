@@ -1,6 +1,6 @@
 package sbtsonar
 
-import sbt.Keys.{baseDirectory, streams, version}
+import sbt.Keys._
 import sbt.Path.richFile
 import sbt.{AutoPlugin, File, IO, Logger, PluginTrigger, Process, SettingKey, TaskKey, settingKey, taskKey}
 
@@ -21,7 +21,13 @@ object SonarPlugin extends AutoPlugin {
 
   override def projectSettings = Seq(
     sonarUseExternalConfig := false,
-    sonarProperties := Map(),
+    sonarProperties := (Seq(
+      "sonar.projectName" -> name.value,
+      "sonar.projectKey" -> normalizedName.value,
+      "sonar.sourceEncoding" -> "UTF-8"
+    ) ++ scalaSource.value.relativeTo(baseDirectory.value) map {
+      dir => "sonar.sources" -> dir.toString
+    }).toMap,
     sonarScan := {
       implicit val logger = streams.value.log
 
