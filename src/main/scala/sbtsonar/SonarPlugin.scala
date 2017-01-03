@@ -2,7 +2,7 @@ package sbtsonar
 
 import sbt.Keys._
 import sbt.Path.richFile
-import sbt.{AutoPlugin, File, IO, Logger, PluginTrigger, Process, SettingKey, TaskKey, settingKey, taskKey}
+import sbt.{AutoPlugin, Compile, File, IO, Logger, PluginTrigger, Process, SettingKey, TaskKey, settingKey, taskKey}
 
 object SonarPlugin extends AutoPlugin {
 
@@ -25,7 +25,7 @@ object SonarPlugin extends AutoPlugin {
       "sonar.projectName" -> name.value,
       "sonar.projectKey" -> normalizedName.value,
       "sonar.sourceEncoding" -> "UTF-8"
-    ) ++ scalaSource.value.relativeTo(baseDirectory.value) map {
+    ) ++ (scalaSource in Compile).value.relativeTo(baseDirectory.value).map {
       dir => "sonar.sources" -> dir.toString
     }).toMap,
     sonarScan := {
@@ -73,7 +73,7 @@ object SonarPlugin extends AutoPlugin {
       val withVersion = sonarProperties + (SonarProjectVersionKey -> version)
       withVersion.map {
         case (key, value) => s"-D$key=$value"
-      } toSeq
+      }.toSeq
     }
   }
 
