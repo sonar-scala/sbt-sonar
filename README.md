@@ -11,7 +11,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.2.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "0.3.1")
 ```
 
 ## Usage
@@ -72,6 +72,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **0.3.1** - Updated the scope of `scalaSource` setting key to resolve scoping ambiguity with some other plugins.
  * **0.3.0** - Defined a set of default project settings in the `sonarProperties` config key.
  * **0.2.0** - Added the ability to define sonar project properties directly in sbt.
  * **0.1.0** - First release of the plugin :tada:!
