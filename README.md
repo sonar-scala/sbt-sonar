@@ -4,7 +4,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 
 ## Requirements
  - sbt 0.13.5+
- - SonarQube server - see my [sonarqube-scala-docker](https://github.com/mwz/sonarqube-scala-docker) repository, which provides a docker-compose recipe for out-of-the-box SonarQube instance with support for Scala, Scoverage (code coverage metrics) and Scalastyle + Scapegoat (static code analysis). Alternatively, see the instructions for [manual installation](http://docs.sonarqube.org/display/SONAR/Get+Started+in+Two+Minutes).
+ - SonarQube server - see my [sonarqube-scala-docker](https://github.com/mwz/sonarqube-scala-docker) repository, which provides a docker-compose recipe for out-of-the-box SonarQube instance with support for [Scala](http://www.scala-lang.org), [Scoverage](https://github.com/scoverage/scalac-scoverage-plugin) (code coverage metrics) and [Scalastyle](http://www.scalastyle.org) + [Scapegoat](https://github.com/sksamuel/scapegoat) (static code analysis). Alternatively, see the instructions for [manual installation](http://docs.sonarqube.org/display/SONAR/Get+Started+in+Two+Minutes).
  - [sonar-scanner](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) executable installed on your CI server or locally if you intend to run the analysis on your machine.
 
 ## Installation
@@ -66,6 +66,11 @@ import sbtsonar.SonarPlugin.autoImport.sonarScan
  
 releaseProcess := Seq[ReleaseStep](
   ...
+  releaseStepCommand("coverageOn"),
+  releaseStepTask(test),
+  releaseStepCommand("coverageOff"),
+  releaseStepTask(coverageReport),
+  releaseStepTask(scapegoat),
   releaseStepTask(sonarScan),
   ...
 )
