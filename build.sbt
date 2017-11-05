@@ -14,6 +14,7 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation"
 )
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 
 // Bintray
 bintrayRepository := "sbt-plugin-releases"
