@@ -16,6 +16,13 @@ scalacOptions ++= Seq(
 )
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 
+// Scripted
+scriptedSettings
+scriptedLaunchOpts := { scriptedLaunchOpts.value ++
+  Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+}
+scriptedBufferLog := false
+
 // Bintray
 bintrayRepository := "sbt-plugin-releases"
 bintrayPackage := "sbt-sonar"
@@ -28,6 +35,7 @@ releaseProcess := Seq[ReleaseStep](
   inquireVersions,
   runClean,
   runTest,
+  releaseStepCommandAndRemaining("^ scripted"),
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,

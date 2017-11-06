@@ -1,0 +1,11 @@
+# Test against sbt 0.13 & scala 2.12.
+# Runs scoverage, scapegoat & sonarScan.
+
+> clean
+> coverage
+> test
+> coverageReport
+> coverageOff
+> scapegoat
+> sonarScan
+$ exists .scannerwork/report-task.txt
