@@ -40,7 +40,7 @@ object SonarPlugin extends AutoPlugin {
       implicit val logger: Logger = streams.value.log
 
       val maybeSonarHome = Option(System.getenv("SONAR_SCANNER_HOME"))
-        .orElse(Option(System.getProperty("SONAR_SCANNER_HOME")))
+        .orElse(Option(System.getProperty("sonarScanner.home")))
 
       if (maybeSonarHome.isEmpty)
         sys.error("SONAR_SCANNER_HOME environmental variable is not defined.")
