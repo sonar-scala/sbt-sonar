@@ -1,4 +1,6 @@
 # sbt-sonar
+[![Download](https://api.bintray.com/packages/mwz/sbt-plugin-releases/sbt-sonar/images/download.svg)](https://bintray.com/mwz/sbt-plugin-releases/sbt-sonar/_latestVersion)
+
 An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](www.sonarqube.org) - a tool for continuous code inspection and quality management :white_check_mark:.
  This plugin is particularly useful if you use [sbt-release](https://www.github.com/sbt/sbt-release) for automated release process in your project.
 
@@ -12,7 +14,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.0.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.1.0")
 ```
 
 ## Usage
@@ -84,6 +86,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **1.1.0** - Search for `sonar-scanner` home directory in system properties (`sonarScanner.home`) if `SONAR_SCANNER_HOME` environmental variable is not defined.
  * **1.0.0** - Support for sbt 1.0 :muscle: default scoverage and scapegoat report paths added automatically to the `sonarProperties` config; added unit and sbt tests.
  * **0.3.1** - Updated the scope of `scalaSource` setting key to resolve scoping ambiguity with some other plugins.
  * **0.3.0** - Defined a set of default project settings in the `sonarProperties` config key.
