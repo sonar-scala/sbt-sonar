@@ -43,7 +43,7 @@ object SonarPlugin extends AutoPlugin {
         .orElse(Option(System.getProperty("sonarScanner.home")))
 
       if (maybeSonarHome.isEmpty)
-        sys.error("SONAR_SCANNER_HOME environmental variable is not defined.")
+        sys.error("SONAR_SCANNER_HOME environmental variable or sonarScanner.home system property not defined.")
 
       // Update the external properties file if the sonarUseExternalConfig is set to true.
       if (sonarUseExternalConfig.value)
