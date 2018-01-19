@@ -16,7 +16,7 @@ addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.0.0")
 ```
 
 ## Usage
-Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` environmental variable and updated the global settings in `$SONAR_SCANNER_HOME/conf/sonar-scanner.properties` to point to your SonarQube instance. 
+Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` environmental variable, or `sonarScanner.home` system property, and updated the global settings in `$SONAR_SCANNER_HOME/conf/sonar-scanner.properties` to point to your SonarQube instance. 
 
 You can define your project properties either in the external config file `sonar-project.properties`, which should be located in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or directly in sbt. By default, the plugin expects the properties to be defined in the `sonarProperties` setting key in sbt, which comes with the following set of predefined properties:
 
