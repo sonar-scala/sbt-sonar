@@ -53,10 +53,10 @@ object SonarPlugin extends AutoPlugin {
 
       val args = sonarScannerArgs(sonarUseExternalConfig.value, sonarProperties.value, version.value)
 
-      val maybeSonarScannerBinFile = maybeSonarHome.map(sonarScannerPath => Paths.get(sonarScannerPath).resolve("bin").toFile)
+      val sonarScannerBinDirectory = maybeSonarHome.map(sonarScannerPath => Paths.get(sonarScannerPath).resolve("bin").toFile)
 
       // Run sonar-scanner executable.
-      Process("sonar-scanner" +: args, maybeSonarScannerBinFile).lines.foreach(logInfo)
+      Process("sonar-scanner" +: args, sonarScannerBinDirectory).lines.foreach(logInfo)
     }
   )
 
