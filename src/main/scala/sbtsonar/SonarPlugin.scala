@@ -1,5 +1,7 @@
 package sbtsonar
 
+import java.nio.file.Paths
+
 import sbt.Keys._
 import sbt.{AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey, settingKey, taskKey}
 
@@ -51,8 +53,10 @@ object SonarPlugin extends AutoPlugin {
 
       val args = sonarScannerArgs(sonarUseExternalConfig.value, sonarProperties.value, version.value)
 
+      val sonarScanner = Paths.get(maybeSonarHome.get).resolve("bin/sonar-scanner").toAbsolutePath.toString
+
       // Run sonar-scanner executable.
-      Process("sonar-scanner", args).lines.foreach(logInfo)
+      Process(sonarScanner, args).lines.foreach(logInfo)
     }
   )
 
