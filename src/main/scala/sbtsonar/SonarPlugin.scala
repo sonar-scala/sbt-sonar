@@ -50,9 +50,9 @@ object SonarPlugin extends AutoPlugin {
         updatePropertiesFile(baseDirectory.value, SonarExternalConfigFileName, version.value)
 
       //Allow to set sonar properties via system properties: [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
-      val ssonarProperties = sonarProperties.value ++ sys.env.filterKeys(_.startsWith("sonar."))
+      val mergedSonarProperties = sonarProperties.value ++ sys.env.filterKeys(_.startsWith("sonar."))
 
-      val args = sonarScannerArgs(sonarUseExternalConfig.value, ssonarProperties, version.value)
+      val args = sonarScannerArgs(sonarUseExternalConfig.value, mergedSonarProperties, version.value)
 
       val sonarScanner = Paths.get(sonarHome).resolve("bin/sonar-scanner").toAbsolutePath.toString
 
