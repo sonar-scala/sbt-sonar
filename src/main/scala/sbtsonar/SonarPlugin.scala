@@ -41,19 +41,20 @@ object SonarPlugin extends AutoPlugin {
     sonarScan := {
       implicit val logger: Logger = streams.value.log
 
-      val maybeSonarHome = Option(System.getenv("SONAR_SCANNER_HOME"))
-        .orElse(Option(System.getProperty("sonarScanner.home")))
-
-      if (maybeSonarHome.isEmpty)
-        sys.error("SONAR_SCANNER_HOME environmental variable or sonarScanner.home system property not defined.")
+      val sonarHome = sys.env.get("SONAR_SCANNER_HOME")
+        .orElse(sys.props.get("sonarScanner.home"))
+        .getOrElse(sys.error("SONAR_SCANNER_HOME environment variable or sonarScanner.home system property not defined."))
 
       // Update the external properties file if the sonarUseExternalConfig is set to true.
       if (sonarUseExternalConfig.value)
         updatePropertiesFile(baseDirectory.value, SonarExternalConfigFileName, version.value)
 
-      val args = sonarScannerArgs(sonarUseExternalConfig.value, sonarProperties.value, version.value)
+      //Allow to set sonar properties via system properties: [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
+      val ssonarProperties = sonarProperties.value ++ sys.env.filterKeys(_.startsWith("sonar."))
 
-      val sonarScanner = Paths.get(maybeSonarHome.get).resolve("bin/sonar-scanner").toAbsolutePath.toString
+      val args = sonarScannerArgs(sonarUseExternalConfig.value, ssonarProperties, version.value)
+
+      val sonarScanner = Paths.get(sonarHome).resolve("bin/sonar-scanner").toAbsolutePath.toString
 
       // Run sonar-scanner executable.
       Process(sonarScanner, args).lines.foreach(logInfo)
