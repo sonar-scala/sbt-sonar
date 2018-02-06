@@ -14,7 +14,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.2.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.3.0")
 ```
 
 ## Usage
@@ -90,6 +90,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **1.3.0** - Allow to set sonar properties via system properties ([#7](https://github.com/mwz/sbt-sonar/pull/7)).
  * **1.2.0** - Use `SONAR_SCANNER_HOME/bin` for lookup of the sonar-scanner executable ([#4](https://github.com/mwz/sbt-sonar/issues/4)).
  * **1.1.0** - Search for `sonar-scanner` home directory in system properties (`sonarScanner.home`) if `SONAR_SCANNER_HOME` environmental variable is not defined ([#1](https://github.com/mwz/sbt-sonar/issues/1)).
  * **1.0.0** - Support for sbt 1.0 :muscle: default scoverage and scapegoat report paths added automatically to the `sonarProperties` config; added unit and sbt tests.
