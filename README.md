@@ -1,4 +1,5 @@
 # sbt-sonar
+[![CircleCI](https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg)](https://circleci.com/gh/mwz/sbt-sonar)
 [![Download](https://api.bintray.com/packages/mwz/sbt-plugin-releases/sbt-sonar/images/download.svg)](https://bintray.com/mwz/sbt-plugin-releases/sbt-sonar/_latestVersion)
 
 An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](www.sonarqube.org) - a tool for continuous code inspection and quality management :white_check_mark:.
