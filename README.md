@@ -1,6 +1,8 @@
 # sbt-sonar
-[![CircleCI](https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg)](https://circleci.com/gh/mwz/sbt-sonar)
+[![CircleCI](https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg?label=Build)](https://circleci.com/gh/mwz/sbt-sonar)
 [![Download](https://api.bintray.com/packages/mwz/sbt-plugin-releases/sbt-sonar/images/download.svg)](https://bintray.com/mwz/sbt-plugin-releases/sbt-sonar/_latestVersion)
+[![Downloads](https://img.shields.io/badge/dynamic/json.svg?uri=https://bintray.com/statistics/packageStatistics?pkgPath=/mwz/sbt-plugin-releases/sbt-sonar&query=$.totalDownloads&label=Downloads+(last+30+days)&colorB=brightgreen)](https://bintray.com/mwz/maven/sonar-scala#statistics)
+[![Insight.io](https://img.shields.io/badge/Insight.io-Ready-brightgreen.svg)](https://insight.io/github.com/mwz/sbt-sonar)
 
 An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](www.sonarqube.org) - a tool for continuous code inspection and quality management :white_check_mark:.
  This plugin is particularly useful if you use [sbt-release](https://www.github.com/sbt/sbt-release) for automated release process in your project.
@@ -8,7 +10,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 ## Requirements
  - sbt 0.13.5+ or 1.0+
  - Scala 2.11/2.12
- - SonarQube server - see my [sonarqube-scala-docker](https://github.com/mwz/sonarqube-scala-docker) repository, which provides a docker-compose recipe for out-of-the-box SonarQube instance with support for [Scala](http://www.scala-lang.org), [Scoverage](https://github.com/scoverage/scalac-scoverage-plugin) (code coverage metrics) and [Scalastyle](http://www.scalastyle.org) + [Scapegoat](https://github.com/sksamuel/scapegoat) (static code analysis). Alternatively, see the instructions for [manual installation](http://docs.sonarqube.org/display/SONAR/Get+Started+in+Two+Minutes).
+ - SonarQube server - see my [sonar-scala-docker](https://github.com/mwz/sonar-scala-docker) repository, which provides a docker-compose recipe and a docker image for out-of-the-box SonarQube instance with support for [Scala](http://www.scala-lang.org), [Scoverage](https://github.com/scoverage/scalac-scoverage-plugin) (code coverage metrics) and [Scalastyle](http://www.scalastyle.org) + [Scapegoat](https://github.com/sksamuel/scapegoat) (static code analysis). Alternatively, see the instructions for [manual installation](http://docs.sonarqube.org/display/SONAR/Get+Started+in+Two+Minutes).
  - [sonar-scanner](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) executable installed on your CI server or locally if you intend to run the analysis on your machine.
 
 ## Installation
