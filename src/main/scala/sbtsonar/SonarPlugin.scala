@@ -3,7 +3,7 @@ package sbtsonar
 import java.nio.file.Paths
 
 import sbt.Keys._
-import sbt.{AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey, settingKey, taskKey}
+import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
 
 import scala.sys.process.Process
 
@@ -15,9 +15,15 @@ object SonarPlugin extends AutoPlugin {
   private val ScapegoatReport = "scapegoat-report/scapegoat.xml"
 
   object autoImport {
-    val sonarUseExternalConfig: SettingKey[Boolean] = settingKey("Whether to use an external sonar-project.properties file instead of the properties defined in the sonarProperties Map.")
-    val sonarProperties: SettingKey[Map[String, String]] = settingKey("SonarScanner configuration properties.")
-    val sonarScan: TaskKey[Unit] = taskKey("Update project version in sonar-project.properties and run sonar scanner process.")
+    val sonarUseExternalConfig: SettingKey[Boolean] = settingKey(
+      "Whether to use an external sonar-project.properties file instead of the properties defined in the sonarProperties Map."
+    )
+    val sonarProperties: SettingKey[Map[String, String]] = settingKey(
+      "SonarScanner configuration properties."
+    )
+    val sonarScan: TaskKey[Unit] = taskKey(
+      "Update project version in sonar-project.properties and run sonar scanner process."
+    )
   }
 
   import autoImport._
@@ -32,18 +38,23 @@ object SonarPlugin extends AutoPlugin {
         "sonar.projectKey" -> normalizedName.value,
         "sonar.sourceEncoding" -> "UTF-8"
       ) ++
-        // Base sources directory.
-        sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
+      // Base sources directory.
+      sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
 
-        // Scoverage & Scapegoat report directories.
-        reports(baseDirectory.value, (crossTarget in Compile).value)
-      ).toMap,
+      // Scoverage & Scapegoat report directories.
+      reports(baseDirectory.value, (crossTarget in Compile).value)
+    ).toMap,
     sonarScan := {
       implicit val logger: Logger = streams.value.log
 
-      val sonarHome = sys.env.get("SONAR_SCANNER_HOME")
+      val sonarHome = sys.env
+        .get("SONAR_SCANNER_HOME")
         .orElse(sys.props.get("sonarScanner.home"))
-        .getOrElse(sys.error("SONAR_SCANNER_HOME environment variable or sonarScanner.home system property not defined."))
+        .getOrElse(
+          sys.error(
+            "SONAR_SCANNER_HOME environment variable or sonarScanner.home system property not defined."
+          )
+        )
 
       // Update the external properties file if the sonarUseExternalConfig is set to true.
       if (sonarUseExternalConfig.value)
@@ -65,12 +76,15 @@ object SonarPlugin extends AutoPlugin {
     IO.relativizeFile(baseDir, scalaSource).map("sonar.sources" -> _.toString)
 
   private[sbtsonar] def reports(baseDir: File, crossTarget: File): Seq[(String, String)] =
-    IO.relativizeFile(baseDir, crossTarget).map { dir =>
-      Seq(
-        "sonar.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
-        "sonar.scala.scapegoat.reportPath" -> new File(dir, ScapegoatReport).toString
-      )
-    }.toSeq.flatten
+    IO.relativizeFile(baseDir, crossTarget)
+      .map { dir =>
+        Seq(
+          "sonar.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
+          "sonar.scala.scapegoat.reportPath" -> new File(dir, ScapegoatReport).toString
+        )
+      }
+      .toSeq
+      .flatten
 
   private[sbtsonar] def updatePropertiesFile(baseDir: File, fileName: String, version: String): Unit = {
     val sonarPropsFile = new File(baseDir, fileName)
@@ -92,9 +106,11 @@ object SonarPlugin extends AutoPlugin {
     IO.writeLines(sonarPropsFile, updatedSonarProps)
   }
 
-  private[sbtsonar] def sonarScannerArgs(sonarUseExternalConfig: Boolean,
-                                         sonarProperties: Map[String, String],
-                                         version: String): Seq[String] = {
+  private[sbtsonar] def sonarScannerArgs(
+    sonarUseExternalConfig: Boolean,
+    sonarProperties: Map[String, String],
+    version: String
+  ): Seq[String] = {
     if (sonarUseExternalConfig) Seq()
     else {
       val withVersion = sonarProperties + (SonarProjectVersionKey -> version)

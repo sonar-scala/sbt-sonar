@@ -11,19 +11,19 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
 
   "sourcesDir" should "resolve correctly the relative path" in {
     SonarPlugin.sourcesDir(new File("."), new File("./a/b")) shouldBe
-      Some("sonar.sources" -> "a/b")
+    Some("sonar.sources" -> "a/b")
   }
 
   "reports" should "resolve correctly the relative path to the report files" in {
     SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
-      Seq(
-        "sonar.scoverage.reportPath" -> "a/b/scoverage-report/scoverage.xml",
-        "sonar.scala.scapegoat.reportPath" -> "a/b/scapegoat-report/scapegoat.xml"
-      )
+    Seq(
+      "sonar.scoverage.reportPath" -> "a/b/scoverage-report/scoverage.xml",
+      "sonar.scala.scapegoat.reportPath" -> "a/b/scapegoat-report/scapegoat.xml"
+    )
   }
 
   "updatePropertiesFile" should
-    "update the sonar properties file with the current project version" in withFile { file =>
+  "update the sonar properties file with the current project version" in withFile { file =>
     val content =
       """# Root project information
         |sonar.projectKey=org.mycompany.myproject
@@ -65,7 +65,7 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
   }
 
   "sonarScannerArgs" should
-    "convert a map with sonar config properties into a sequence of java env properties " in {
+  "convert a map with sonar config properties into a sequence of java env properties " in {
     val sonarProperties = Map("a" -> "b", "c.d" -> "e.f")
     val result = SonarPlugin.sonarScannerArgs(
       sonarUseExternalConfig = false,

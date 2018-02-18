@@ -10,15 +10,18 @@ releaseCrossBuild := true
 sbtPlugin := true
 publishMavenStyle := false
 scalacOptions ++= Seq(
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-unchecked",
   "-deprecation"
 )
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+scalafmtOnCompile in ThisBuild := true
 
 // Scripted
 scriptedSettings
-scriptedLaunchOpts := { scriptedLaunchOpts.value ++
+scriptedLaunchOpts := {
+  scriptedLaunchOpts.value ++
   Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
 }
 scriptedBufferLog := false
