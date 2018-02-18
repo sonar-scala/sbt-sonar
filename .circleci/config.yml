@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/repo
@@ -17,4 +17,40 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
-      - run: sbt ^test:test
+      - run: sbt ^test
+  release:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.sbt" }}
+          - v1-dependencies-
+      - add_ssh_keys:
+          fingerprints:
+            - "bf:24:38:ce:25:6b:8c:da:e6:3a:b4:e7:23:66:b6:59"
+      - run: git config --global user.name "CircleCI"
+      - run: git config --global user.email "mwz@users.noreply.github.com"
+      - run: sbt 'release with-defaults skip-tests'
+workflows:
+  version: 2
+  sbt-sonar:
+    jobs:
+      - test
+      - hold:
+          type: approval
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - release:
+          requires:
+            - hold
+          filters:
+            branches:
+              only: master
