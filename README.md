@@ -86,7 +86,7 @@ sonarUseExternalConfig := true
 To run the plugin, execute the `sonarScan` sbt task in your project. Depending on the configuration option you have chosen, the plugin will update the `sonar.projectVersion` property to your current project version either in `sonar-project.properties` file or in the `sonarProperties` in sbt config and it will run the `sonar-scanner` executable printing the progress to sbt console. 
 Also, you can overwrite/set [sonarProperties](https://docs.sonarqube.org/display/SONAR/Analysis+Parameters) via system properties (java options) when you execute `sonarScan` command, e.g.:
 ```scala
- sbt sonarScan -Dsonar.projectName=dev-projectName
+ sbt -Dsonar.projectName=dev-projectName sonarScan 
 ```
 
 This plugin can be also easily used with the `sbt-release` by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
