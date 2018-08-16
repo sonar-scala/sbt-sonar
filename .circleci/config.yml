@@ -33,9 +33,13 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "bf:24:38:ce:25:6b:8c:da:e6:3a:b4:e7:23:66:b6:59"
-      - run: git config --global user.name "CircleCI"
-      - run: git config --global user.email "mwz@users.noreply.github.com"
-      - run: sbt 'release with-defaults skip-tests'
+      - run:
+          name: Set up git
+          command: |
+            git config --global user.name "CircleCI"
+            git config --global user.email "mwz@users.noreply.github.com"
+            ssh-keyscan -T 15 github.com >> ~/.ssh/known_hosts
+      - run: sbt 'release with-defaults skip-tests' < /dev/null
 workflows:
   version: 2
   sbt-sonar:
