@@ -5,7 +5,7 @@ organization := "com.github.mwz"
 homepage := Some(url("https://github.com/mwz/sbt-sonar"))
 licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
-crossSbtVersions := Seq("0.13.16", "1.0.3")
+crossSbtVersions := Seq("0.13.17", "1.1.6")
 releaseCrossBuild := true
 sbtPlugin := true
 publishMavenStyle := false
@@ -37,8 +37,6 @@ releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
-  releaseStepCommandAndRemaining("^ test"),
-  releaseStepCommandAndRemaining("^ scripted"),
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
