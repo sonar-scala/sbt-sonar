@@ -31,7 +31,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.3.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.4.0")
 ```
 
 ## Usage
@@ -39,12 +39,13 @@ Before using the plugin, make sure you have defined the `SONAR_SCANNER_HOME` env
 
 You can define your project properties either in the external config file `sonar-project.properties`, which should be located in the root directory of your project as explained in [SonarQube Scanner guide](http://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner) or directly in sbt. By default, the plugin expects the properties to be defined in the `sonarProperties` setting key in sbt, which comes with the following set of predefined properties:
 
- - *sonar.projectName* - your project name defined in the `name` sbt setting key.
- - *sonar.projectKey* - your project name transformed into a lowercase and dash-separated value.
- - *sonar.sourceEncoding* - UTF-8.
- - *sonar.sources* - default Scala source directory relative to the root of your project (usually `src/main/scala`).
- - *sonar.scoverage.reportPath* - relative path to the scoverage report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
- - *sonar.scala.scapegoat.reportPath* - relative path to the scapegoat report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
+ - **sonar.projectName** - your project name defined in the `name` sbt setting key
+ - **sonar.projectKey** - your project name transformed into a lowercase and dash-separated value
+ - **sonar.sourceEncoding** - UTF-8
+ - **sonar.sources** - default Scala source directory relative to the root of your project (usually `src/main/scala`)
+ - **sonar.scala.version** - defines the version of Scala used in your project (i.e. `scalaVersion`)
+ - **sonar.scoverage.reportPath** - relative path to the scoverage report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
+ - **sonar.scala.scapegoat.reportPath** - relative path to the scapegoat report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
 
 If you wish to add more properties to the existing config e.g. to configure your Sonar plugins or set up multi-module project, use the `++=` operator, e.g.:
  
@@ -86,7 +87,7 @@ sonarUseExternalConfig := true
 To run the plugin, execute the `sonarScan` sbt task in your project. Depending on the configuration option you have chosen, the plugin will update the `sonar.projectVersion` property to your current project version either in `sonar-project.properties` file or in the `sonarProperties` in sbt config and it will run the `sonar-scanner` executable printing the progress to sbt console. 
 Also, you can overwrite/set [sonarProperties](https://docs.sonarqube.org/display/SONAR/Analysis+Parameters) via system properties (java options) when you execute `sonarScan` command, e.g.:
 ```scala
- sbt -Dsonar.projectName=dev-projectName sonarScan 
+ sbt -Dsonar.projectName=dev-projectName sonarScan
 ```
 
 This plugin can be also easily used with the `sbt-release` by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
@@ -107,6 +108,7 @@ releaseProcess := Seq[ReleaseStep](
 ```
 
 ## Changelog
+ * **1.4.0** - Set automatically the `sonar.scala.version` property ([#13](https://github.com/mwz/sbt-sonar/pull/13)).
  * **1.3.0** - Allow to set sonar properties via system properties ([#7](https://github.com/mwz/sbt-sonar/pull/7)).
  * **1.2.0** - Use `SONAR_SCANNER_HOME/bin` for lookup of the sonar-scanner executable ([#4](https://github.com/mwz/sbt-sonar/issues/4)).
  * **1.1.0** - Search for `sonar-scanner` home directory in system properties (`sonarScanner.home`) if `SONAR_SCANNER_HOME` environmental variable is not defined ([#1](https://github.com/mwz/sbt-sonar/issues/1)).
