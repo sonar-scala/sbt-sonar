@@ -1,6 +1,7 @@
 package sbtsonar
 
 import java.io.File
+import java.nio.file.Paths
 
 import org.scalatest._
 import sbt.IO
@@ -11,14 +12,14 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
 
   "sourcesDir" should "resolve correctly the relative path" in {
     SonarPlugin.sourcesDir(new File("."), new File("./a/b")) shouldBe
-    Some("sonar.sources" -> "a/b")
+    Some("sonar.sources" -> Paths.get("a/b").toString)
   }
 
   "reports" should "resolve correctly the relative path to the report files" in {
     SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
     Seq(
-      "sonar.scoverage.reportPath" -> "a/b/scoverage-report/scoverage.xml",
-      "sonar.scala.scapegoat.reportPath" -> "a/b/scapegoat-report/scapegoat.xml"
+      "sonar.scoverage.reportPath" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
+      "sonar.scala.scapegoat.reportPath" -> Paths.get("a/b/scapegoat-report/scapegoat.xml").toString
     )
   }
 
@@ -61,7 +62,7 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
     IO.writeLines(file, content.split(Properties.lineSeparator).toSeq)
     SonarPlugin.updatePropertiesFile(file.getParentFile, file.getName, "123.456.789")
 
-    IO.readLines(file) shouldBe expectedContent.split(Properties.lineSeparator).toList
+    IO.readLines(file) shouldBe expectedContent.split("\\r?\\n").toList
   }
 
   "sonarScannerArgs" should

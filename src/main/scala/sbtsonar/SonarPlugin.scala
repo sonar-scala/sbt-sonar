@@ -6,6 +6,7 @@ import sbt.Keys._
 import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
 
 import scala.sys.process.Process
+import scala.util.Properties
 
 object SonarPlugin extends AutoPlugin {
 
@@ -66,7 +67,8 @@ object SonarPlugin extends AutoPlugin {
 
       val args = sonarScannerArgs(sonarUseExternalConfig.value, mergedSonarProperties, version.value)
 
-      val sonarScanner = Paths.get(sonarHome).resolve("bin/sonar-scanner").toAbsolutePath.toString
+      val executablePath = if (Properties.isWin) "bin/sonar-scanner.bat" else "bin/sonar-scanner"
+      val sonarScanner = Paths.get(sonarHome).resolve(executablePath).toAbsolutePath.toString
 
       // Run sonar-scanner executable.
       Process(sonarScanner, args).lines.foreach(logInfo)
