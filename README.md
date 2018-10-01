@@ -18,7 +18,7 @@ sbt-sonar
 [insightio]: https://insight.io/github.com/mwz/sbt-sonar
 
 
-An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](www.sonarqube.org) - a tool for continuous code inspection and quality management :white_check_mark:.
+An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](https://www.sonarqube.org/) - a tool for continuous code inspection and quality management :white_check_mark:.
  This plugin is particularly useful if you use [sbt-release](https://www.github.com/sbt/sbt-release) for automated release process in your project.
 
 ## Requirements
