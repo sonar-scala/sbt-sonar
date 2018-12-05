@@ -9,7 +9,7 @@ import scala.collection.JavaConverters._
 import sbt.Keys._
 import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
 
-import org.sonarsource.scanner.api.{EmbeddedScanner, StdOutLogOutput}
+import org.sonarsource.scanner.api.{EmbeddedScanner, ScannerProperties, StdOutLogOutput}
 
 object SonarPlugin extends AutoPlugin {
 
@@ -83,8 +83,10 @@ object SonarPlugin extends AutoPlugin {
             getClass.getPackage.getImplementationVersion,
             new StdOutLogOutput()
           )
+        val javaProps = mergedSonarProperties.asJava
+        embeddedScanner.addGlobalProperties(javaProps)
         embeddedScanner.start()
-        embeddedScanner.execute(mergedSonarProperties.asJava)
+        embeddedScanner.execute(javaProps)
       }
     }
   )
