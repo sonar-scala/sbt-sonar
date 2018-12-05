@@ -15,6 +15,7 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation"
 )
+libraryDependencies += "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.11.0.1537" % "compile"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 scalafmtOnCompile in ThisBuild := true
 

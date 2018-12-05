@@ -2,11 +2,14 @@ package sbtsonar
 
 import java.nio.file.Paths
 
+import scala.sys.process.Process
+import scala.util.Properties
+import scala.collection.JavaConverters._
+
 import sbt.Keys._
 import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
 
-import scala.sys.process.Process
-import scala.util.Properties
+import org.sonarsource.scanner.api.{EmbeddedScanner, StdOutLogOutput}
 
 object SonarPlugin extends AutoPlugin {
 
@@ -49,29 +52,40 @@ object SonarPlugin extends AutoPlugin {
     sonarScan := {
       implicit val logger: Logger = streams.value.log
 
-      val sonarHome = sys.env
-        .get("SONAR_SCANNER_HOME")
-        .orElse(sys.props.get("sonarScanner.home"))
-        .getOrElse(
-          sys.error(
-            "SONAR_SCANNER_HOME environment variable or sonarScanner.home system property not defined."
-          )
-        )
-
-      // Update the external properties file if the sonarUseExternalConfig is set to true.
-      if (sonarUseExternalConfig.value)
-        updatePropertiesFile(baseDirectory.value, SonarExternalConfigFileName, version.value)
-
       //Allow to set sonar properties via system properties: [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
       val mergedSonarProperties = sonarProperties.value ++ sys.props.filterKeys(_.startsWith("sonar."))
 
-      val args = sonarScannerArgs(sonarUseExternalConfig.value, mergedSonarProperties, version.value)
+      if (sonarUseExternalConfig.value) {
+        val sonarHome = sys.env
+          .get("SONAR_SCANNER_HOME")
+          .orElse(sys.props.get("sonarScanner.home"))
+          .getOrElse(
+            sys.error(
+              "SONAR_SCANNER_HOME environment variable or sonarScanner.home system property not defined."
+            )
+          )
 
-      val executablePath = if (Properties.isWin) "bin/sonar-scanner.bat" else "bin/sonar-scanner"
-      val sonarScanner = Paths.get(sonarHome).resolve(executablePath).toAbsolutePath.toString
+        // Update the external properties file if the sonarUseExternalConfig is set to true.
+        if (sonarUseExternalConfig.value)
+          updatePropertiesFile(baseDirectory.value, SonarExternalConfigFileName, version.value)
 
-      // Run sonar-scanner executable.
-      Process(sonarScanner, args).lines.foreach(logInfo)
+        val args = sonarScannerArgs(sonarUseExternalConfig.value, mergedSonarProperties, version.value)
+
+        val executablePath = if (Properties.isWin) "bin/sonar-scanner.bat" else "bin/sonar-scanner"
+        val sonarScanner = Paths.get(sonarHome).resolve(executablePath).toAbsolutePath.toString
+
+        // Run sonar-scanner executable.
+        Process(sonarScanner, args).lines.foreach(logInfo)
+      } else {
+        val embeddedScanner = EmbeddedScanner
+          .create(
+            "sbt-sonar",
+            getClass.getPackage.getImplementationVersion,
+            new StdOutLogOutput()
+          )
+        embeddedScanner.start()
+        embeddedScanner.execute(mergedSonarProperties.asJava)
+      }
     }
   )
 
