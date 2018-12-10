@@ -39,6 +39,7 @@ object SonarPlugin extends AutoPlugin {
 
   override def projectSettings = Seq(
     sonarUseExternalConfig := false,
+    sonarUseStandaloneSonarScanner := false,
     sonarProperties := (
       Seq(
         "sonar.projectName" -> name.value,
