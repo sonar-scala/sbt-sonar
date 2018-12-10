@@ -5,11 +5,11 @@ import java.nio.file.Paths
 import scala.sys.process.Process
 import scala.util.Properties
 import scala.collection.JavaConverters._
-
 import sbt.Keys._
 import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
+import org.sonarsource.scanner.api.{EmbeddedScanner}
 
-import org.sonarsource.scanner.api.{EmbeddedScanner, ScannerProperties, StdOutLogOutput}
+import scala.util.control.NonFatal
 
 object SonarPlugin extends AutoPlugin {
 
@@ -121,16 +121,22 @@ object SonarPlugin extends AutoPlugin {
     baseDir: File,
     fileName: String,
     version: String
-  ): Map[String, String] = {
+  )(implicit logger: Logger): Map[String, String] = {
     val properties = new java.util.Properties()
     val fileStream = new java.io.FileInputStream(new java.io.File(fileName))
     try {
       properties.load(fileStream)
+      properties.asScala.toMap
     } finally {
-      fileStream.close()
+      try {
+        fileStream.close()
+      } catch {
+        case NonFatal(e) =>
+          logger.error(e.getMessage)
+        case t: Throwable =>
+          throw t
+      }
     }
-
-    return properties.asScala.toMap
   }
 
   private[sbtsonar] def updatePropertiesFile(baseDir: File, fileName: String, version: String): Unit = {
