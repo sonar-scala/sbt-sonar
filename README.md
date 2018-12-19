@@ -107,6 +107,9 @@ releaseProcess := Seq[ReleaseStep](
 )
 ```
 
+## Examples
+Please see [src/sbt-test](https://github.com/mwz/sbt-sonar/tree/master/src/sbt-test/sbt-sonar) directory for some example projects.
+
 ## Changelog
  * **1.5.0** - Allow sbt-sonar to run on Windows ([#16](https://github.com/mwz/sbt-sonar/pull/16)).
  * **1.4.0** - Set automatically the `sonar.scala.version` property ([#13](https://github.com/mwz/sbt-sonar/pull/13)).
