@@ -3,7 +3,7 @@ package sbtsonar
 import java.nio.file.Paths
 
 import sbt.Keys._
-import sbt.{settingKey, taskKey, AutoPlugin, Compile, File, IO, Logger, PluginTrigger, SettingKey, TaskKey}
+import sbt._
 
 import scala.sys.process.Process
 import scala.util.Properties
@@ -43,6 +43,9 @@ object SonarPlugin extends AutoPlugin {
       // Base sources directory.
       sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
 
+      // Base tests directory.
+      testsDir(baseDirectory.value, (scalaSource in Test).value) ++
+
       // Scoverage & Scapegoat report directories.
       reports(baseDirectory.value, (crossTarget in Compile).value)
     ).toMap,
@@ -75,8 +78,11 @@ object SonarPlugin extends AutoPlugin {
     }
   )
 
-  private[sbtsonar] def sourcesDir(baseDir: File, scalaSource: File): Option[(String, String)] =
-    IO.relativizeFile(baseDir, scalaSource).map("sonar.sources" -> _.toString)
+  private[sbtsonar] def sourcesDir(baseDir: File, scalaSources: File): Option[(String, String)] =
+    IO.relativizeFile(baseDir, scalaSources).map("sonar.sources" -> _.toString)
+
+  private[sbtsonar] def testsDir(baseDir: File, scalaTests: File): Option[(String, String)] =
+    IO.relativizeFile(baseDir, scalaTests).map("sonar.tests" -> _.toString)
 
   private[sbtsonar] def reports(baseDir: File, crossTarget: File): Seq[(String, String)] =
     IO.relativizeFile(baseDir, crossTarget)
