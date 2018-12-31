@@ -31,7 +31,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.5.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.6.0")
 ```
 
 ## Usage
@@ -42,7 +42,8 @@ You can define your project properties either in the external config file `sonar
  - **sonar.projectName** - your project name defined in the `name` sbt setting key
  - **sonar.projectKey** - your project name transformed into a lowercase and dash-separated value
  - **sonar.sourceEncoding** - UTF-8
- - **sonar.sources** - default Scala source directory relative to the root of your project (usually `src/main/scala`)
+ - **sonar.sources** - default Scala source directory relative to the root of your project (usually `src/main/scala`, uses the value of `scalaSource in Compile`)
+ - **sonar.tests** - default Scala tests directory relative to the root of your project (usually `src/test/scala`, uses the value of `scalaSource in Test`)
  - **sonar.scala.version** - defines the version of Scala used in your project (i.e. `scalaVersion`)
  - **sonar.scoverage.reportPath** - relative path to the scoverage report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
  - **sonar.scala.scapegoat.reportPath** - relative path to the scapegoat report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
@@ -54,6 +55,7 @@ import sbtsonar.SonarPlugin.autoImport.sonarProperties
  
 sonarProperties ++= Map(
   "sonar.sources" -> "src/main/scala",
+  "sonar.tests" -> "src/test/scala",
   "sonar.modules" -> "module1,module2",
   "module1.sonar.projectName" -> "Module 1",
   "module2.sonar.projectName" -> "Module 2"
@@ -70,6 +72,8 @@ sonarProperties := Map(
   "sonar.projectName" -> "Project Name",
   "sonar.projectKey" -> "project-name",
   "sonar.sources" -> "src/main/scala",
+  "sonar.tests" -> "src/test/scala",
+  "sonar.junit.reportPaths" -> "target/test-reports",
   "sonar.sourceEncoding" -> "UTF-8",
   "sonar.scoverage.reportPath" -> "target/scala-2.12/scoverage-report/scoverage.xml",
   "sonar.scala.scapegoat.reportPath" -> "target/scala-2.12/scapegoat-report/scapegoat.xml"
@@ -111,6 +115,7 @@ releaseProcess := Seq[ReleaseStep](
 Please see [src/sbt-test](https://github.com/mwz/sbt-sonar/tree/master/src/sbt-test/sbt-sonar) directory for some example projects.
 
 ## Changelog
+ * **1.6.0** - Set automatically the `sonar.tests` property ([#25](https://github.com/mwz/sbt-sonar/pull/25)).
  * **1.5.0** - Allow sbt-sonar to run on Windows ([#16](https://github.com/mwz/sbt-sonar/pull/16)).
  * **1.4.0** - Set automatically the `sonar.scala.version` property ([#13](https://github.com/mwz/sbt-sonar/pull/13)).
  * **1.3.0** - Allow to set sonar properties via system properties ([#7](https://github.com/mwz/sbt-sonar/pull/7)).
