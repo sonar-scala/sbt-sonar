@@ -15,6 +15,11 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
     Some("sonar.sources" -> Paths.get("a/b").toString)
   }
 
+  "testsDir" should "resolve correctly the relative path" in {
+    SonarPlugin.testsDir(new File("."), new File("./a/b")) shouldBe
+    Some("sonar.tests" -> Paths.get("a/b").toString)
+  }
+
   "reports" should "resolve correctly the relative path to the report files" in {
     SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
     Seq(
