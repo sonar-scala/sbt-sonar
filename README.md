@@ -4,7 +4,6 @@ sbt-sonar
 [![bintray-badge][]][bintray]
 [![bintray-stats-badge][]][bintray-stats]
 [![gitter-badge][]][gitter]
-[![insightio-badge][]][insightio]
 
 [circleci-badge]: https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg?label=Build
 [circleci]: https://circleci.com/gh/mwz/sbt-sonar
@@ -15,7 +14,6 @@ sbt-sonar
 [gitter-badge]: https://img.shields.io/gitter/room/sonar-scala/sbt-sonar.svg?colorB=46BC99&label=Chat
 [gitter]: https://gitter.im/sonar-scala/sbt-sonar
 [insightio-badge]: https://img.shields.io/badge/Insight.io-Ready-brightgreen.svg
-[insightio]: https://insight.io/github.com/mwz/sbt-sonar
 
 
 An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Scala project with [SonarQube](https://www.sonarqube.org/) - a tool for continuous code inspection and quality management :white_check_mark:.
