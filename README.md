@@ -43,7 +43,7 @@ You can define your project properties either in the external config file `sonar
  - **sonar.sources** - default Scala source directory relative to the root of your project (usually `src/main/scala`, uses the value of `scalaSource in Compile`)
  - **sonar.tests** - default Scala tests directory relative to the root of your project (usually `src/test/scala`, uses the value of `scalaSource in Test`)
  - **sonar.scala.version** - defines the version of Scala used in your project (i.e. `scalaVersion`)
- - **sonar.scala.coverage.reportPath** - relative path to the scoverage report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
+ - **sonar.scala.scoverage.reportPath** - relative path to the scoverage report (e.g. `target/scala-2.12/scoverage-report/scoverage.xml`)
  - **sonar.scala.scapegoat.reportPath** - relative path to the scapegoat report (e.g. `target/scala-2.12/scapegoat-report/scapegoat.xml`)
 
 If you wish to add more properties to the existing config e.g. to configure your Sonar plugins or set up multi-module project, use the `++=` operator, e.g.:
@@ -73,7 +73,7 @@ sonarProperties := Map(
   "sonar.tests" -> "src/test/scala",
   "sonar.junit.reportPaths" -> "target/test-reports",
   "sonar.sourceEncoding" -> "UTF-8",
-  "sonar.scoverage.reportPath" -> "target/scala-2.12/scoverage-report/scoverage.xml",
+  "sonar.scala.scoverage.reportPath" -> "target/scala-2.12/scoverage-report/scoverage.xml",
   "sonar.scala.scapegoat.reportPath" -> "target/scala-2.12/scapegoat-report/scapegoat.xml"
   ...
 )
