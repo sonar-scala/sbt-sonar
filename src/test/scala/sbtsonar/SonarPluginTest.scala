@@ -23,7 +23,7 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
   "reports" should "resolve correctly the relative path to the report files" in {
     SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
     Seq(
-      "sonar.scoverage.reportPath" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
+      "sonar.scala.scoverage.reportPath" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
       "sonar.scala.scapegoat.reportPath" -> Paths.get("a/b/scapegoat-report/scapegoat.xml").toString
     )
   }

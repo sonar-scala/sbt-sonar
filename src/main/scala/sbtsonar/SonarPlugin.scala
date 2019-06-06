@@ -88,7 +88,7 @@ object SonarPlugin extends AutoPlugin {
     IO.relativizeFile(baseDir, crossTarget)
       .map { dir =>
         Seq(
-          "sonar.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
+          "sonar.scala.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
           "sonar.scala.scapegoat.reportPath" -> new File(dir, ScapegoatReport).toString
         )
       }
