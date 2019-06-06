@@ -1,11 +1,12 @@
 import ReleaseTransformations._
+enablePlugins(SbtPlugin)
 
 name := "sbt-sonar"
 organization := "com.github.mwz"
 homepage := Some(url("https://github.com/mwz/sbt-sonar"))
 licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
-crossSbtVersions := Seq("0.13.17", "1.1.6")
+crossSbtVersions := Seq("0.13.18", "1.2.8")
 releaseCrossBuild := true
 sbtPlugin := true
 publishMavenStyle := false
@@ -15,11 +16,10 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation"
 )
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.7" % "test"
 scalafmtOnCompile in ThisBuild := true
 
 // Scripted
-scriptedSettings
 scriptedLaunchOpts := {
   scriptedLaunchOpts.value ++
   Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
