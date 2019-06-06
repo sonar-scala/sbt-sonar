@@ -6,6 +6,10 @@ target
 # IntelliJ
 .idea
 
+# metals
+.bloop
+.metals
+
 # Other
 *.log
 *.orig
