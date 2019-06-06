@@ -29,7 +29,7 @@ An sbt plugin which can be used to run `sonar-scanner` launcher to analyse a Sca
 To install this plugin in your project, add the following to your `./project/plugins.sbt` file:
 
 ```scala
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.6.0")
+addSbtPlugin("com.github.mwz" % "sbt-sonar" % "1.7.0")
 ```
 
 ## Usage
@@ -113,6 +113,7 @@ releaseProcess := Seq[ReleaseStep](
 Please see [src/sbt-test](https://github.com/mwz/sbt-sonar/tree/master/src/sbt-test/sbt-sonar) directory for some example projects.
 
 ## Changelog
+ * **1.7.0** - Renamed deprecated `sonar.scoverage.reportPath` property to `sonar.scala.scoverage.reportPath` ([#30](https://github.com/mwz/sbt-sonar/pull/30)).
  * **1.6.0** - Set automatically the `sonar.tests` property ([#25](https://github.com/mwz/sbt-sonar/pull/25)).
  * **1.5.0** - Allow sbt-sonar to run on Windows ([#16](https://github.com/mwz/sbt-sonar/pull/16)).
  * **1.4.0** - Set automatically the `sonar.scala.version` property ([#13](https://github.com/mwz/sbt-sonar/pull/13)).
