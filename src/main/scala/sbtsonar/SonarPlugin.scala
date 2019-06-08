@@ -19,7 +19,7 @@ package sbtsonar
 import java.nio.file.Paths
 import java.util.{Properties => JavaProperties}
 
-import org.sonarsource.scanner.api.EmbeddedScanner
+import org.sonarsource.scanner.api.{EmbeddedScanner, LogOutput}
 import sbt.Keys._
 import sbt._
 
@@ -76,23 +76,36 @@ object SonarPlugin extends AutoPlugin {
 
       // Allow to set sonar properties via system properties
       // [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
-      val mergedSonarProperties: Map[String, String] =
-        sonarProperties.value ++ sys.props.filterKeys(_.startsWith("sonar."))
+      val systemProperties: Map[String, String] =
+        sys.props.filterKeys(_.startsWith("sonar.")).toMap
 
       if (sonarUseSonarScannerCli.value)
         useStandaloneScanner(
           sonarUseExternalConfig.value,
           baseDirectory.value,
           version.value,
-          mergedSonarProperties
+          sonarProperties.value,
+          systemProperties
         )
-      else
+      else {
+        val logOutput: LogOutput = SonarSbtLogOutput(systemProperties)
+        val embeddedScanner: EmbeddedScanner =
+          EmbeddedScanner
+            .create(
+              "sbt-sonar",
+              getClass.getPackage.getImplementationVersion,
+              logOutput
+            )
+
         useEmbeddedScanner(
           sonarUseExternalConfig.value,
-          baseDirectory.value,
+          new File(baseDirectory.value, SonarExternalConfigFileName),
           version.value,
-          mergedSonarProperties
+          sonarProperties.value,
+          systemProperties,
+          embeddedScanner
         )
+      }
     }
   )
 
@@ -136,21 +149,24 @@ object SonarPlugin extends AutoPlugin {
   private[sbtsonar] def sonarScannerArgs(
     sonarUseExternalConfig: Boolean,
     sonarProperties: Map[String, String],
+    systemProperties: Map[String, String],
     version: String
-  ): Seq[String] = {
-    if (sonarUseExternalConfig) Seq.empty
-    else {
-      (sonarProperties + (SonarProjectVersionKey -> version)).map {
-        case (key, value) => s"-D$key=$value"
-      }.toSeq
-    }
+  ): List[String] = {
+    val properties: Map[String, String] =
+      if (sonarUseExternalConfig) systemProperties
+      else (sonarProperties + (SonarProjectVersionKey -> version)) ++ systemProperties
+
+    properties.map {
+      case (key, value) => s"-D$key=$value"
+    }.toList
   }
 
   private[sbtsonar] def useStandaloneScanner(
     sonarUseExternalConfig: Boolean,
     baseDirectory: File,
     version: String,
-    mergedSonarProperties: Map[String, String]
+    sonarProperties: Map[String, String],
+    systemProperties: Map[String, String]
   )(implicit log: Logger): Unit = {
     val sonarHome: String =
       sys.env
@@ -167,7 +183,7 @@ object SonarPlugin extends AutoPlugin {
       updatePropertiesFile(baseDirectory, SonarExternalConfigFileName, version)
 
     val args: Seq[String] =
-      sonarScannerArgs(sonarUseExternalConfig, mergedSonarProperties, version)
+      sonarScannerArgs(sonarUseExternalConfig, sonarProperties, systemProperties, version)
 
     val executablePath: String =
       if (Properties.isWin) "bin/sonar-scanner.bat"
@@ -186,34 +202,33 @@ object SonarPlugin extends AutoPlugin {
       .foreach(log.info(_))
   }
 
+  private[sbtsonar] def propertiesFromFile(file: File): Map[String, String] = {
+    SbtCompat.Using.fileInputStream(file) { stream =>
+      val props = new JavaProperties
+      props.load(stream)
+      props.asScala.toMap
+    }
+  }
+
   private[sbtsonar] def useEmbeddedScanner(
     useExternalConfig: Boolean,
-    baseDirectory: File,
+    propertiesFile: File,
     version: String,
-    mergedSonarProperties: Map[String, String]
+    sonarProperties: Map[String, String],
+    systemProperties: Map[String, String],
+    embeddedScanner: EmbeddedScanner
   )(implicit log: Logger): Unit = {
-    val props: Map[String, String] =
-      if (useExternalConfig) {
-        val sonarPropsFile = new File(baseDirectory, SonarExternalConfigFileName)
-        val properties = SbtCompat.Using.fileInputStream(sonarPropsFile) { stream =>
-          val props = new JavaProperties
-          props.load(stream)
-          props.asScala.toMap
-        }
-        properties + (SonarProjectVersionKey -> version)
-      } else mergedSonarProperties
+    val properties: Map[String, String] =
+      if (useExternalConfig)
+        // Overwrite project version.
+        (propertiesFromFile(propertiesFile) + (SonarProjectVersionKey -> version)) ++ systemProperties
+      else sonarProperties ++ systemProperties
 
-    val embeddedScanner =
-      EmbeddedScanner
-        .create(
-          "sbt-sonar",
-          getClass.getPackage.getImplementationVersion,
-          SonarSbtLogOutput(props)
-        )
-        .addGlobalProperties(props.asJava)
+    val configuredScanner =
+      embeddedScanner.addGlobalProperties(properties.asJava)
 
-    embeddedScanner.start()
-    log.info("SonarQube server: " + embeddedScanner.serverVersion)
-    embeddedScanner.execute(props.asJava)
+    configuredScanner.start()
+    log.info("SonarQube server version: " + configuredScanner.serverVersion)
+    configuredScanner.execute(properties.asJava)
   }
 }

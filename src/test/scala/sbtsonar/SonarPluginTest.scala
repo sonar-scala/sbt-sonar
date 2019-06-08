@@ -19,12 +19,38 @@ package sbtsonar
 import java.io.File
 import java.nio.file.Paths
 
+import org.mockito.{ArgumentMatchersSugar, IdiomaticMockito}
 import org.scalatest._
+import org.sonarsource.scanner.api.EmbeddedScanner
 import sbt.IO
+import sbt.util.Logger
 
+import scala.collection.JavaConverters._
 import scala.util.Properties
 
-class SonarPluginTest extends FlatSpec with Matchers with WithFile {
+class SonarPluginTest
+    extends FlatSpec
+    with Matchers
+    with IdiomaticMockito
+    with ArgumentMatchersSugar
+    with WithFile {
+
+  val sonarPropertiesFileContent =
+    """# Root project information
+      |sonar.projectKey=org.mycompany.myproject
+      |sonar.projectName=My Project
+      |sonar.projectVersion=1.0
+      |
+      |# Some properties that will be inherited by the modules
+      |sonar.sources=src
+      |
+      |# List of the module identifiers
+      |sonar.modules=module1,module2
+      |
+      |# Properties can obviously be overriden for
+      |# each module - just prefix them with the module ID
+      |module1.sonar.projectName=Module 1
+      |module2.sonar.projectName=Module 2""".stripMargin
 
   "sourcesDir" should "resolve correctly the relative path" in {
     SonarPlugin.sourcesDir(new File("."), new File("./a/b")) shouldBe
@@ -46,23 +72,6 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
 
   "updatePropertiesFile" should
   "update the sonar properties file with the current project version" in withFile { file =>
-    val content =
-      """# Root project information
-        |sonar.projectKey=org.mycompany.myproject
-        |sonar.projectName=My Project
-        |sonar.projectVersion=1.0
-        |
-        |# Some properties that will be inherited by the modules
-        |sonar.sources=src
-        |
-        |# List of the module identifiers
-        |sonar.modules=module1,module2
-        |
-        |# Properties can obviously be overriden for
-        |# each module - just prefix them with the module ID
-        |module1.sonar.projectName=Module 1
-        |module2.sonar.projectName=Module 2""".stripMargin
-
     val expectedContent =
       """# Root project information
         |sonar.projectKey=org.mycompany.myproject
@@ -80,7 +89,7 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
         |module1.sonar.projectName=Module 1
         |module2.sonar.projectName=Module 2""".stripMargin
 
-    IO.writeLines(file, content.split(Properties.lineSeparator).toSeq)
+    IO.writeLines(file, sonarPropertiesFileContent.split(Properties.lineSeparator).toSeq)
     SonarPlugin.updatePropertiesFile(file.getParentFile, file.getName, "123.456.789")
 
     IO.readLines(file) shouldBe expectedContent.split("\\r?\\n").toList
@@ -89,12 +98,98 @@ class SonarPluginTest extends FlatSpec with Matchers with WithFile {
   "sonarScannerArgs" should
   "convert a map with sonar config properties into a sequence of java env properties " in {
     val sonarProperties = Map("a" -> "b", "c.d" -> "e.f")
-    val result = SonarPlugin.sonarScannerArgs(
+    val systemProperties = Map("sonar.host.url" -> "http://localhost", "sonar.verbose" -> "true")
+
+    val noExternalConfig = SonarPlugin.sonarScannerArgs(
       sonarUseExternalConfig = false,
       sonarProperties = sonarProperties,
+      systemProperties = systemProperties,
       version = "987.654.321"
     )
-    val expected = Seq("-Da=b", "-Dc.d=e.f", "-Dsonar.projectVersion=987.654.321")
-    result shouldBe expected
+    noExternalConfig should contain theSameElementsAs Seq(
+      "-Da=b",
+      "-Dc.d=e.f",
+      "-Dsonar.projectVersion=987.654.321",
+      "-Dsonar.host.url=http://localhost",
+      "-Dsonar.verbose=true"
+    )
+
+    val withExternalConfig = SonarPlugin.sonarScannerArgs(
+      sonarUseExternalConfig = true,
+      sonarProperties = sonarProperties,
+      systemProperties = systemProperties,
+      version = "987.654.321"
+    )
+    withExternalConfig should contain theSameElementsAs Seq(
+      "-Dsonar.host.url=http://localhost",
+      "-Dsonar.verbose=true"
+    )
+  }
+
+  "propertiesFromFile" should "read sonar properties from a file" in withFile { file =>
+    IO.writeLines(file, sonarPropertiesFileContent.split(Properties.lineSeparator).toSeq)
+
+    val expected = Map(
+      "sonar.projectKey" -> "org.mycompany.myproject",
+      "sonar.projectName" -> "My Project",
+      "sonar.projectVersion" -> "1.0",
+      "sonar.sources" -> "src",
+      "sonar.modules" -> "module1,module2",
+      "module1.sonar.projectName" -> "Module 1",
+      "module2.sonar.projectName" -> "Module 2"
+    )
+
+    SonarPlugin.propertiesFromFile(file) should contain theSameElementsAs expected
+  }
+
+  "useEmbeddedScanner" should "start the analysis using the embedded scanner" in {
+    implicit val log = Logger.Null
+    val embeddedScanner = mock[EmbeddedScanner]
+    embeddedScanner.addGlobalProperties(*) shouldReturn embeddedScanner
+
+    SonarPlugin.useEmbeddedScanner(
+      useExternalConfig = false,
+      propertiesFile = new File("."),
+      version = "1.2.3",
+      sonarProperties = Map("sonar.property1" -> "value1"),
+      systemProperties = Map("sonar.property2" -> "value2"),
+      embeddedScanner
+    )
+
+    val properties = Map("sonar.property1" -> "value1", "sonar.property2" -> "value2")
+    embeddedScanner.addGlobalProperties(properties.asJava) was called
+    embeddedScanner.start was called
+    embeddedScanner.execute(properties.asJava) was called
+  }
+
+  "useEmbeddedScanner" should "respect properties from an external file" in withFile { file =>
+    IO.writeLines(file, sonarPropertiesFileContent.split(Properties.lineSeparator).toSeq)
+
+    implicit val log = Logger.Null
+    val embeddedScanner = mock[EmbeddedScanner]
+    embeddedScanner.addGlobalProperties(*) shouldReturn embeddedScanner
+
+    SonarPlugin.useEmbeddedScanner(
+      useExternalConfig = true,
+      propertiesFile = file,
+      version = "1.2.3",
+      sonarProperties = Map("sonar.property1" -> "value1"),
+      systemProperties = Map("sonar.property2" -> "value2"),
+      embeddedScanner
+    )
+
+    val properties = Map(
+      "sonar.projectKey" -> "org.mycompany.myproject",
+      "sonar.projectName" -> "My Project",
+      "sonar.sources" -> "src",
+      "sonar.modules" -> "module1,module2",
+      "module1.sonar.projectName" -> "Module 1",
+      "module2.sonar.projectName" -> "Module 2",
+      "sonar.projectVersion" -> "1.2.3",
+      "sonar.property2" -> "value2"
+    )
+    embeddedScanner.addGlobalProperties(properties.asJava) was called
+    embeddedScanner.start was called
+    embeddedScanner.execute(properties.asJava) was called
   }
 }
