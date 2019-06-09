@@ -25,7 +25,7 @@ import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.sonarsource.scanner.api.EmbeddedScanner
 import sbt.IO
-import sbt.util.Logger
+import SbtCompat.Logger
 
 import scala.collection.JavaConverters._
 import scala.util.Properties

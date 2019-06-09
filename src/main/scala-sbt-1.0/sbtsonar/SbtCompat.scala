@@ -19,6 +19,7 @@ package sbtsonar
 import scala.sys.process.ProcessBuilder
 
 object SbtCompat {
+  val Logger = sbt.util.Logger
   val Using = sbt.io.Using
 
   def process(process: ProcessBuilder): Stream[String] =
