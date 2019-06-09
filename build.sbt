@@ -33,9 +33,9 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 libraryDependencies ++= List(
-  "org.sonarsource.scanner.api" % "sonar-scanner-api"        % "2.12.0.1661" % Compile,
-  "org.scalatest"               %% "scalatest"               % "3.0.7"       % Test,
-  "org.mockito"                 %% "mockito-scala-scalatest" % "1.5.7"       % Test
+  "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.12.0.1661" % Compile,
+  "org.scalatest"               %% "scalatest"        % "3.0.7"       % Test,
+  "org.mockito"                 % "mockito-core"      % "2.28.2"      % Test
 )
 scalafmtOnCompile in ThisBuild := true
 cancelable in Global := true

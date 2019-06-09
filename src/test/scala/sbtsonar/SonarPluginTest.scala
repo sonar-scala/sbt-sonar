@@ -19,8 +19,10 @@ package sbtsonar
 import java.io.File
 import java.nio.file.Paths
 
-import org.mockito.{ArgumentMatchersSugar, IdiomaticMockito}
-import org.scalatest._
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito._
+import org.scalatest.{FlatSpec, Matchers}
+import org.scalatestplus.mockito.MockitoSugar
 import org.sonarsource.scanner.api.EmbeddedScanner
 import sbt.IO
 import sbt.util.Logger
@@ -28,12 +30,7 @@ import sbt.util.Logger
 import scala.collection.JavaConverters._
 import scala.util.Properties
 
-class SonarPluginTest
-    extends FlatSpec
-    with Matchers
-    with IdiomaticMockito
-    with ArgumentMatchersSugar
-    with WithFile {
+class SonarPluginTest extends FlatSpec with Matchers with MockitoSugar with WithFile {
 
   val sonarPropertiesFileContent =
     """# Root project information
@@ -145,7 +142,7 @@ class SonarPluginTest
   "useEmbeddedScanner" should "start the analysis using the embedded scanner" in {
     implicit val log = Logger.Null
     val embeddedScanner = mock[EmbeddedScanner]
-    embeddedScanner.addGlobalProperties(*) shouldReturn embeddedScanner
+    when(embeddedScanner.addGlobalProperties(any())).thenReturn(embeddedScanner)
 
     SonarPlugin.useEmbeddedScanner(
       useExternalConfig = false,
@@ -157,9 +154,9 @@ class SonarPluginTest
     )
 
     val properties = Map("sonar.property1" -> "value1", "sonar.property2" -> "value2")
-    embeddedScanner.addGlobalProperties(properties.asJava) was called
-    embeddedScanner.start was called
-    embeddedScanner.execute(properties.asJava) was called
+    verify(embeddedScanner).addGlobalProperties(properties.asJava)
+    verify(embeddedScanner).start
+    verify(embeddedScanner).execute(properties.asJava)
   }
 
   "useEmbeddedScanner" should "respect properties from an external file" in withFile { file =>
@@ -167,7 +164,7 @@ class SonarPluginTest
 
     implicit val log = Logger.Null
     val embeddedScanner = mock[EmbeddedScanner]
-    embeddedScanner.addGlobalProperties(*) shouldReturn embeddedScanner
+    when(embeddedScanner.addGlobalProperties(any())).thenReturn(embeddedScanner)
 
     SonarPlugin.useEmbeddedScanner(
       useExternalConfig = true,
@@ -188,8 +185,8 @@ class SonarPluginTest
       "sonar.projectVersion" -> "1.2.3",
       "sonar.property2" -> "value2"
     )
-    embeddedScanner.addGlobalProperties(properties.asJava) was called
-    embeddedScanner.start was called
-    embeddedScanner.execute(properties.asJava) was called
+    verify(embeddedScanner).addGlobalProperties(properties.asJava)
+    verify(embeddedScanner).start
+    verify(embeddedScanner).execute(properties.asJava)
   }
 }
