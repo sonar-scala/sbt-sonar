@@ -16,15 +16,12 @@
 
 package sbtsonar
 
-import java.io.File
-import java.nio.file.Files
+import scala.sys.process.ProcessBuilder
 
-import sbt.IO
+object SbtCompat {
+  val Logger = sbt.util.Logger
+  val Using = sbt.io.Using
 
-trait WithFile {
-  def withFile(test: File => Any) {
-    val file = Files.createTempFile("sonar-project", ".properties").toFile
-    try test(file)
-    finally IO.delete(file)
-  }
+  def process(process: ProcessBuilder): Stream[String] =
+    process.lineStream
 }
