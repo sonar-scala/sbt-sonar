@@ -80,23 +80,23 @@ sonarUseExternalConfig := true
 
 ### Execute SonarQube scan
 
-To run the plugin, execute the **`sonarScan`** sbt task in your project. Depending on the configuration option you have chosen, the plugin will update the `sonar.projectVersion` property to your current project version either in `sonar-project.properties` file or in the `sonarProperties` in sbt config and it will run the SonarQube scan printing the progress to sbt console.
+To run SonarQube analysis, execute the **`sonarScan`** sbt task in your project. Depending on the configuration option you have chosen, the plugin will update the `sonar.projectVersion` property to your current project version either in `sonar-project.properties` file or in the `sonarProperties` in sbt config and it will run the SonarQube scan printing the progress to sbt console.
 
 Also, you can overwrite/set [sonarProperties](https://docs.sonarqube.org/display/SONAR/Analysis+Parameters) via system properties (java options) when you execute `sonarScan` command, e.g.:
 
-```scala
-sbt -Dsonar.projectName=dev-projectName sonarScan
+```bash
+sbt -Dsonar.projectName=MyProjectName sonarScan
 ```
 
 Please remember to set the `sonar.host.url` property before you execute the analysis. You can do that either by adding it to the `sonarProperties` settings in sbt (as shown in the examples above), or you can set it via a system property, e.g.:
 
-```scala
+```bash
 sbt -Dsonar.host.url=https://your-sonarqube-server.com sonarScan
 ```
 
 ### sbt-release
 
-This plugin can be also easily used with the `sbt-release` by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
+This plugin can be also easily used with [sbt-release](https://github.com/sbt/sbt-release) by wrapping the `sonarScan` task in a `releaseStepTask` in the following way:
 
 ```scala
 import sbtsonar.SonarPlugin.autoImport.sonarScan
