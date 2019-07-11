@@ -33,7 +33,7 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 libraryDependencies ++= List(
-  "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.12.0.1661" % Compile,
+  "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.13.0.1871" % Compile,
   "org.scalatest"               %% "scalatest"        % "3.0.8"       % Test,
   "org.mockito"                 % "mockito-core"      % "3.0.0"      % Test
 )
