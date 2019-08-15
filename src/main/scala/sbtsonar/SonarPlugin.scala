@@ -31,7 +31,7 @@ object SonarPlugin extends AutoPlugin {
   private val SonarProjectVersionKey = "sonar.projectVersion"
   private val SonarExternalConfigFileName = "sonar-project.properties"
   private val ScoverageReport = "scoverage-report/scoverage.xml"
-  private val ScapegoatReport = "scapegoat-report/scapegoat.xml"
+  private val ScapegoatReport = "scapegoat-report/scapegoat-scalastyle.xml"
 
   object autoImport {
     val sonarUseExternalConfig: SettingKey[Boolean] = settingKey(
@@ -119,8 +119,8 @@ object SonarPlugin extends AutoPlugin {
     IO.relativizeFile(baseDir, crossTarget)
       .map { dir =>
         Seq(
-          "sonar.scala.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
-          "sonar.scala.scapegoat.reportPath" -> new File(dir, ScapegoatReport).toString
+          "sonar.scala.coverage.reportPaths" -> new File(dir, ScoverageReport).toString,
+          "sonar.scala.scapegoat.reportPaths" -> new File(dir, ScapegoatReport).toString
         )
       }
       .toSeq

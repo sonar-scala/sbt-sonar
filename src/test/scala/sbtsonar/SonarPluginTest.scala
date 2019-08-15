@@ -62,8 +62,10 @@ class SonarPluginTest extends FlatSpec with Matchers with MockitoSugar with With
   "reports" should "resolve correctly the relative path to the report files" in {
     SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
     Seq(
-      "sonar.scala.scoverage.reportPath" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
-      "sonar.scala.scapegoat.reportPath" -> Paths.get("a/b/scapegoat-report/scapegoat.xml").toString
+      "sonar.scala.coverage.reportPaths" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
+      "sonar.scala.scapegoat.reportPaths" -> Paths
+        .get("a/b/scapegoat-report/scapegoat-scalastyle.xml")
+        .toString
     )
   }
 
