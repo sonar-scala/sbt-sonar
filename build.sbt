@@ -22,7 +22,7 @@ headerLicense := Some(
 )
 excludeFilter.in(headerResources) := "*.scala"
 
-crossSbtVersions := Seq("0.13.18", "1.2.8")
+crossSbtVersions := Seq("0.13.18", "1.3.2")
 releaseCrossBuild := true
 sbtPlugin := true
 publishMavenStyle := false
@@ -35,9 +35,12 @@ scalacOptions ++= Seq(
 libraryDependencies ++= List(
   "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.14.0.2002" % Compile,
   "org.scalatest"               %% "scalatest"        % "3.0.8"       % Test,
-  "org.mockito"                 % "mockito-core"      % "3.1.0"      % Test
+  "org.mockito"                 % "mockito-core"      % "3.1.0"       % Test
 )
-scalafmtOnCompile in ThisBuild := true
+scalafmtOnCompile in ThisBuild :=
+  sys.env
+    .get("DISABLE_SCALAFMT")
+    .forall(_.toLowerCase == "false")
 cancelable in Global := true
 
 // Scripted

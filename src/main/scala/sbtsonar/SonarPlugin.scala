@@ -19,13 +19,13 @@ package sbtsonar
 import java.nio.file.Paths
 import java.util.{Properties => JavaProperties}
 
-import org.sonarsource.scanner.api.{EmbeddedScanner, LogOutput}
-import sbt.Keys._
-import sbt._
-
 import scala.collection.JavaConverters._
 import scala.sys.process.Process
 import scala.util.Properties
+
+import org.sonarsource.scanner.api.{EmbeddedScanner, LogOutput}
+import sbt.Keys._
+import sbt._
 
 object SonarPlugin extends AutoPlugin {
   private val SonarProjectVersionKey = "sonar.projectVersion"
