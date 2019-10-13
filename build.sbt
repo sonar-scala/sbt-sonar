@@ -35,7 +35,7 @@ scalacOptions ++= Seq(
 libraryDependencies ++= List(
   "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.13.0.1871" % Compile,
   "org.scalatest"               %% "scalatest"        % "3.0.8"       % Test,
-  "org.mockito"                 % "mockito-core"      % "3.0.0"      % Test
+  "org.mockito"                 % "mockito-core"      % "3.1.0"      % Test
 )
 scalafmtOnCompile in ThisBuild := true
 cancelable in Global := true
