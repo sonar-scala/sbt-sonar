@@ -19,16 +19,16 @@ package sbtsonar
 import java.io.File
 import java.nio.file.Paths
 
+import scala.collection.JavaConverters._
+import scala.util.Properties
+
+import SbtCompat.Logger
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.sonarsource.scanner.api.EmbeddedScanner
 import sbt.IO
-import SbtCompat.Logger
-
-import scala.collection.JavaConverters._
-import scala.util.Properties
 
 class SonarPluginTest extends FlatSpec with Matchers with MockitoSugar with WithFile {
 
