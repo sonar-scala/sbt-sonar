@@ -1,17 +1,24 @@
 version: 2
+
+defaults: &defaults
+  docker:
+    - image: circleci/openjdk:8-jdk
+  working_directory: ~/repo
+  environment:
+    TERM: xterm
+    DEBIAN_FRONTEND: noninteractive
+    DISABLE_SCALAFMT: true
+    JVM_OPTS: -Xmx3200m
+
 jobs:
   test:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.sbt" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            - v1-dependencies-
       - run: sbt ^test:compile
       - save_cache:
           paths:
@@ -19,17 +26,13 @@ jobs:
           key: v1-dependencies--{{ checksum "build.sbt" }}
       - run: sbt ^test
   release:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
+    <<: *defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.sbt" }}
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            - v1-dependencies-
       - add_ssh_keys:
           fingerprints:
             - "bf:24:38:ce:25:6b:8c:da:e6:3a:b4:e7:23:66:b6:59"
@@ -40,6 +43,7 @@ jobs:
             git config --global user.email "mwz@users.noreply.github.com"
             ssh-keyscan -T 15 github.com >> ~/.ssh/known_hosts
       - run: sbt 'release with-defaults skip-tests' < /dev/null
+
 workflows:
   version: 2
   sbt-sonar:
