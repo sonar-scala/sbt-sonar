@@ -212,7 +212,7 @@ directory for some example projects.
 
 ## Changelog
 
-- **2.1.0** (14.10.2019) - Allow to use `SONAR_HOST_URL` environment variable to
+- **2.1.0** (16.10.2019) - Allow to use `SONAR_HOST_URL` environment variable to
   define SonarQube instance URL instead of the `sonar.host.url` system property.
   If both values are present, the `sonar.host.url` system property takes
   precedence over the environment variable.
