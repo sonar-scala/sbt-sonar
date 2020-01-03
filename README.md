@@ -16,7 +16,6 @@
 [gitter]: https://gitter.im/sonar-scala/sonar-scala
 [gitter-badge]:
   https://img.shields.io/gitter/room/sonar-scala/sonar-scala.svg?colorB=46BC99&label=Chat
-[insightio-badge]: https://img.shields.io/badge/Insight.io-Ready-brightgreen.svg
 
 sbt-sonar is an sbt plugin, which provides an easy way to integrate Scala
 projects with [SonarQube](https://www.sonarqube.org) - a tool for continuous
