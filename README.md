@@ -13,12 +13,12 @@
 [circleci]: https://circleci.com/gh/mwz/sbt-sonar
 [circleci-badge]:
   https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg?label=Build
-[gitter]: https://gitter.im/sonar-scala/sbt-sonar
+[gitter]: https://gitter.im/sonar-scala/sonar-scala
 [gitter-badge]:
-  https://img.shields.io/gitter/room/sonar-scala/sbt-sonar.svg?colorB=46BC99&label=Chat
+  https://img.shields.io/gitter/room/sonar-scala/sonar-scala.svg?colorB=46BC99&label=Chat
 [insightio-badge]: https://img.shields.io/badge/Insight.io-Ready-brightgreen.svg
 
-Sbt-sonar is an sbt plugin, which provides an easy way to integrate Scala
+sbt-sonar is an sbt plugin, which provides an easy way to integrate Scala
 projects with [SonarQube](https://www.sonarqube.org) - a tool for continuous
 code inspection and quality management :white_check_mark:.
 
