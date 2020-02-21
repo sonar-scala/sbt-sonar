@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 All sbt-sonar contributors
+ * Copyright 2016-2020 All sbt-sonar contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,13 @@ import scala.util.Properties
 import SbtCompat.Logger
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.{FlatSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import org.sonarsource.scanner.api.EmbeddedScanner
 import sbt.IO
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SonarPluginTest extends FlatSpec with Matchers with MockitoSugar with WithFile {
+class SonarPluginTest extends AnyFlatSpec with Matchers with MockitoSugar with WithFile {
 
   val sonarPropertiesFileContent =
     """# Root project information
