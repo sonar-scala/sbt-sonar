@@ -222,7 +222,7 @@ object SonarPlugin extends AutoPlugin {
       if (useExternalConfig)
         // Overwrite project version.
         (propertiesFromFile(propertiesFile) + (SonarProjectVersionKey -> version)) ++ systemProperties
-      else sonarProperties ++ systemProperties
+      else (sonarProperties + (SonarProjectVersionKey -> version)) ++ systemProperties
 
     val configuredScanner =
       embeddedScanner.addGlobalProperties(properties.asJava)

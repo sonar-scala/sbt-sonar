@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 All sbt-sonar contributors
+ * Copyright 2016-2020 All sbt-sonar contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,7 +153,11 @@ class SonarPluginTest extends FlatSpec with Matchers with MockitoSugar with With
       embeddedScanner
     )
 
-    val properties = Map("sonar.property1" -> "value1", "sonar.property2" -> "value2")
+    val properties = Map(
+      "sonar.property1" -> "value1",
+      "sonar.property2" -> "value2",
+      "sonar.projectVersion" -> "1.2.3"
+    )
     verify(embeddedScanner).addGlobalProperties(properties.asJava)
     verify(embeddedScanner).start
     verify(embeddedScanner).execute(properties.asJava)
