@@ -154,7 +154,11 @@ class SonarPluginTest extends AnyFlatSpec with Matchers with MockitoSugar with W
       embeddedScanner
     )
 
-    val properties = Map("sonar.property1" -> "value1", "sonar.property2" -> "value2")
+    val properties = Map(
+      "sonar.property1" -> "value1",
+      "sonar.property2" -> "value2",
+      "sonar.projectVersion" -> "1.2.3"
+    )
     verify(embeddedScanner).addGlobalProperties(properties.asJava)
     verify(embeddedScanner).start
     verify(embeddedScanner).execute(properties.asJava)

@@ -9,6 +9,7 @@ target
 # metals
 .bloop
 .metals
+metals.sbt
 
 # Other
 *.log
