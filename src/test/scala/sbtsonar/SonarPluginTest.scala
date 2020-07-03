@@ -61,10 +61,16 @@ class SonarPluginTest extends AnyFlatSpec with Matchers with MockitoSugar with W
   }
 
   "reports" should "resolve correctly the relative path to the report files" in {
-    SonarPlugin.reports(new File("."), new File("./a/b")) shouldBe
+    SonarPlugin.reports(new File("."), new File("./a/b"), expectSonarQubeCommunityPlugin = true) shouldBe
     Seq(
       "sonar.scala.scoverage.reportPath" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
       "sonar.scala.scapegoat.reportPath" -> Paths.get("a/b/scapegoat-report/scapegoat.xml").toString
+    )
+
+    SonarPlugin.reports(new File("."), new File("./a/b"), expectSonarQubeCommunityPlugin = false) shouldBe
+    Seq(
+      "sonar.scala.coverage.reportPaths" -> Paths.get("a/b/scoverage-report/scoverage.xml").toString,
+      "sonar.scala.scapegoat.reportPaths" -> Paths.get("a/b/scapegoat-report/scapegoat.xml").toString
     )
   }
 
