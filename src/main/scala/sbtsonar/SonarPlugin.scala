@@ -40,6 +40,9 @@ object SonarPlugin extends AutoPlugin {
     val sonarUseSonarScannerCli: SettingKey[Boolean] = settingKey(
       "Whether to use a standalone sonar-scanner CLI instead of the embedded sonar-scanner API."
     )
+    val sonarExpectSonarQubeCommunityPlugin: SettingKey[Boolean] = settingKey(
+      "Whether to expect the target SonarQube server to run SonarScala (vendor plugin) or sonar-scala (community plugin)"
+    )
     val sonarProperties: SettingKey[Map[String, String]] = settingKey(
       "SonarScanner configuration properties."
     )
@@ -52,62 +55,69 @@ object SonarPlugin extends AutoPlugin {
 
   override def trigger: PluginTrigger = allRequirements
 
-  override def projectSettings = Seq(
-    sonarUseExternalConfig := false,
-    sonarUseSonarScannerCli := false,
-    sonarProperties := (
-        Seq(
-          "sonar.projectName" -> name.value,
-          "sonar.projectKey" -> normalizedName.value,
-          "sonar.sourceEncoding" -> "UTF-8",
-          "sonar.scala.version" -> scalaVersion.value
-        ) ++
-        // Base sources directory.
-        sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
+  override def projectSettings =
+    Seq(
+      sonarUseExternalConfig := false,
+      sonarUseSonarScannerCli := false,
+      // true for backwards compatibility
+      sonarExpectSonarQubeCommunityPlugin := true,
+      sonarProperties := (
+          Seq(
+            "sonar.projectName" -> name.value,
+            "sonar.projectKey" -> normalizedName.value,
+            "sonar.sourceEncoding" -> "UTF-8",
+            "sonar.scala.version" -> scalaVersion.value
+          ) ++
+          // Base sources directory.
+          sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
 
-        // Base tests directory.
-        testsDir(baseDirectory.value, (scalaSource in Test).value) ++
+          // Base tests directory.
+          testsDir(baseDirectory.value, (scalaSource in Test).value) ++
 
-        // Scoverage & Scapegoat report directories.
-        reports(baseDirectory.value, (crossTarget in Compile).value)
-      ).toMap,
-    sonarScan := {
-      implicit val log: Logger = streams.value.log
+          // Scoverage & Scapegoat report directories.
+          reports(
+            baseDirectory.value,
+            (crossTarget in Compile).value,
+            sonarExpectSonarQubeCommunityPlugin.value
+          )
+        ).toMap,
+      sonarScan := {
+        implicit val log: Logger = streams.value.log
 
-      // Allow to set sonar properties via system properties
-      // [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
-      val systemProperties: Map[String, String] =
-        sys.props.filterKeys(_.startsWith("sonar.")).toMap
+        // Allow to set sonar properties via system properties
+        // [https://docs.sonarqube.org/display/SONAR/Analysis+Parameters]
+        val systemProperties: Map[String, String] =
+          sys.props.filterKeys(_.startsWith("sonar.")).toMap
 
-      if (sonarUseSonarScannerCli.value)
-        useStandaloneScanner(
-          sonarUseExternalConfig.value,
-          baseDirectory.value,
-          version.value,
-          sonarProperties.value,
-          systemProperties
-        )
-      else {
-        val logOutput: LogOutput = SonarSbtLogOutput(systemProperties)
-        val embeddedScanner: EmbeddedScanner =
-          EmbeddedScanner
-            .create(
-              "sbt-sonar",
-              getClass.getPackage.getImplementationVersion,
-              logOutput
-            )
+        if (sonarUseSonarScannerCli.value)
+          useStandaloneScanner(
+            sonarUseExternalConfig.value,
+            baseDirectory.value,
+            version.value,
+            sonarProperties.value,
+            systemProperties
+          )
+        else {
+          val logOutput: LogOutput = SonarSbtLogOutput(systemProperties)
+          val embeddedScanner: EmbeddedScanner =
+            EmbeddedScanner
+              .create(
+                "sbt-sonar",
+                getClass.getPackage.getImplementationVersion,
+                logOutput
+              )
 
-        useEmbeddedScanner(
-          sonarUseExternalConfig.value,
-          new File(baseDirectory.value, SonarExternalConfigFileName),
-          version.value,
-          sonarProperties.value,
-          systemProperties,
-          embeddedScanner
-        )
+          useEmbeddedScanner(
+            sonarUseExternalConfig.value,
+            new File(baseDirectory.value, SonarExternalConfigFileName),
+            version.value,
+            sonarProperties.value,
+            systemProperties,
+            embeddedScanner
+          )
+        }
       }
-    }
-  )
+    )
 
   private[sbtsonar] def sourcesDir(baseDir: File, scalaSources: File): Option[(String, String)] =
     IO.relativizeFile(baseDir, scalaSources).map("sonar.sources" -> _.toString)
@@ -115,16 +125,27 @@ object SonarPlugin extends AutoPlugin {
   private[sbtsonar] def testsDir(baseDir: File, scalaTests: File): Option[(String, String)] =
     IO.relativizeFile(baseDir, scalaTests).map("sonar.tests" -> _.toString)
 
-  private[sbtsonar] def reports(baseDir: File, crossTarget: File): Seq[(String, String)] =
+  private[sbtsonar] def reports(
+    baseDir: File,
+    crossTarget: File,
+    expectSonarQubeCommunityPlugin: Boolean
+  ): Seq[(String, String)] = {
+    val (scoverageReportKey, scapegoatReportKey) = {
+      if (expectSonarQubeCommunityPlugin)
+        ("sonar.scala.scoverage.reportPath", "sonar.scala.scapegoat.reportPath")
+      else
+        ("sonar.scala.coverage.reportPaths", "sonar.scala.scapegoat.reportPaths")
+    }
     IO.relativizeFile(baseDir, crossTarget)
       .map { dir =>
         Seq(
-          "sonar.scala.scoverage.reportPath" -> new File(dir, ScoverageReport).toString,
-          "sonar.scala.scapegoat.reportPath" -> new File(dir, ScapegoatReport).toString
+          scoverageReportKey -> new File(dir, ScoverageReport).toString,
+          scapegoatReportKey -> new File(dir, ScapegoatReport).toString
         )
       }
       .toSeq
       .flatten
+  }
 
   private[sbtsonar] def updatePropertiesFile(baseDir: File, fileName: String, version: String): Unit = {
     val sonarPropsFile = new File(baseDir, fileName)
