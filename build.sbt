@@ -34,7 +34,7 @@ scalacOptions ++= Seq(
 )
 libraryDependencies ++= List(
   "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.15.0.2182" % Compile,
-  "org.scalatest"               %% "scalatest"        % "3.2.2"       % Test,
+  "org.scalatest"               %% "scalatest"        % "3.2.3"       % Test,
   "org.scalatestplus"           %% "mockito-1-10"     % "3.1.0.0"     % Test,
   "org.mockito"                 % "mockito-core"      % "3.5.15"       % Test
 )
