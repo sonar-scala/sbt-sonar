@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2020 All sbt-sonar contributors
+ * Copyright 2016-2021 All sbt-sonar contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,25 +62,25 @@ object SonarPlugin extends AutoPlugin {
       // true for backwards compatibility
       sonarExpectSonarQubeCommunityPlugin := true,
       sonarProperties := (
-          Seq(
-            "sonar.projectName" -> name.value,
-            "sonar.projectKey" -> normalizedName.value,
-            "sonar.sourceEncoding" -> "UTF-8",
-            "sonar.scala.version" -> scalaVersion.value
-          ) ++
-          // Base sources directory.
-          sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
+        Seq(
+          "sonar.projectName" -> name.value,
+          "sonar.projectKey" -> normalizedName.value,
+          "sonar.sourceEncoding" -> "UTF-8",
+          "sonar.scala.version" -> scalaVersion.value
+        ) ++
+        // Base sources directory.
+        sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++
 
-          // Base tests directory.
-          testsDir(baseDirectory.value, (scalaSource in Test).value) ++
+        // Base tests directory.
+        testsDir(baseDirectory.value, (scalaSource in Test).value) ++
 
-          // Scoverage & Scapegoat report directories.
-          reports(
-            baseDirectory.value,
-            (crossTarget in Compile).value,
-            sonarExpectSonarQubeCommunityPlugin.value
-          )
-        ).toMap,
+        // Scoverage & Scapegoat report directories.
+        reports(
+          baseDirectory.value,
+          (crossTarget in Compile).value,
+          sonarExpectSonarQubeCommunityPlugin.value
+        )
+      ).toMap,
       sonarScan := {
         implicit val log: Logger = streams.value.log
 
@@ -177,8 +177,8 @@ object SonarPlugin extends AutoPlugin {
       if (sonarUseExternalConfig) systemProperties
       else (sonarProperties + (SonarProjectVersionKey -> version)) ++ systemProperties
 
-    properties.map {
-      case (key, value) => s"-D$key=$value"
+    properties.map { case (key, value) =>
+      s"-D$key=$value"
     }.toList
   }
 

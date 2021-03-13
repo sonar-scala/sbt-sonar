@@ -3,11 +3,13 @@
 dist
 target
 
-# IntelliJ
+# IDE
 .idea
+.vscode
 
 # metals
 .bloop
+.bsp
 .metals
 metals.sbt
 
