@@ -67,4 +67,4 @@ scriptedLaunchOpts := {
 scriptedBufferLog := false
 
 // Sonatype
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeCredentialHost := "s01.oss.sonatype.org"
