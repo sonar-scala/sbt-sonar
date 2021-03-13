@@ -1,14 +1,13 @@
 import java.time.Year
 
 import de.heikoseeberger.sbtheader.License
-import ReleaseTransformations._
 
 enablePlugins(AutomateHeaderPlugin)
 enablePlugins(SbtPlugin)
 
 name := "sbt-sonar"
-organization := "com.github.mwz"
-homepage := Some(url("https://github.com/mwz/sbt-sonar"))
+organization := "com.sonar-scala"
+homepage := Some(url("https://github.com/sonar-scala/sbt-sonar"))
 
 // Licence
 organizationName := "All sbt-sonar contributors"
@@ -21,11 +20,24 @@ headerLicense := Some(
   )
 )
 excludeFilter.in(headerResources) := "*.scala"
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/sonar-scala/sbt-sonar"),
+    "scm:git:https://github.com/sonar-scala/sbt-sonar.git",
+    Some("scm:git:git@github.com:sonar-scala/sbt-sonar.git")
+  )
+)
+developers := List(
+  Developer(
+    "mwz",
+    "Michael Wizner",
+    "@mwz",
+    url("https://github.com/mwz")
+  )
+)
 
-crossSbtVersions := Seq("0.13.18", "1.3.2")
-releaseCrossBuild := true
+crossSbtVersions := Seq("0.13.18", "1.4.9")
 sbtPlugin := true
-publishMavenStyle := false
 scalacOptions ++= Seq(
   "-encoding",
   "UTF-8",
@@ -34,13 +46,13 @@ scalacOptions ++= Seq(
 )
 libraryDependencies ++= List(
   "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.16.0.226" % Compile,
-  "org.scalatest"               %% "scalatest"        % "3.2.6"       % Test,
-  "org.scalatestplus"           %% "mockito-1-10"     % "3.1.0.0"     % Test,
-  "org.mockito"                 % "mockito-core"      % "3.8.0"       % Test
+  "org.scalatest"              %% "scalatest"         % "3.2.6"      % Test,
+  "org.scalatestplus"          %% "mockito-1-10"      % "3.1.0.0"    % Test,
+  "org.mockito"                 % "mockito-core"      % "3.8.0"      % Test
 )
 scalafmtOnCompile in ThisBuild :=
   sys.env
-    .get("DISABLE_SCALAFMT")
+    .get("CI")
     .forall(_.toLowerCase == "false")
 cancelable in Global := true
 
@@ -53,24 +65,3 @@ scriptedLaunchOpts := {
   )
 }
 scriptedBufferLog := false
-
-// Bintray
-bintrayRepository := "sbt-plugin-releases"
-bintrayPackage := "sbt-sonar"
-bintrayReleaseOnPublish := false
-
-// Release
-releaseVersionBump := sbtrelease.Version.Bump.Minor
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runClean,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  releaseStepCommandAndRemaining("^ publish"),
-  releaseStepTask(bintrayRelease in thisProjectRef.value),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
-)
