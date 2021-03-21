@@ -5,6 +5,7 @@ on:
     tags: ["*"]
 env:
   CI_SNAPSHOT_RELEASE: "^publish"
+  CI_RELEASE: "^publishSigned"
 jobs:
   release:
     runs-on: ubuntu-20.04
