@@ -1,23 +1,12 @@
 <h1 align="left"> <img src="https://sonar-scala.com/img/logo.svg" height="80px"> sbt-sonar</h1>
 
-[![circleci-badge]][circleci] [![bintray-badge]][bintray]
-[![bintray-badge-downloads]][bintray-downloads]
-[![bintray-stats-badge]][bintray-stats] [![gitter-badge]][gitter]
+![](https://img.shields.io/github/workflow/status/sonar-scala/sbt-sonar/Release/master)
+[![maven-badge]][maven] [![gitter-badge]][gitter]
 
+[maven]: https://search.maven.org/artifact/com.sonar-scala/sbt-sonar
+[maven-badge]:
+  https://maven-badges.herokuapp.com/maven-central/com.sonar-scala/sbt-sonar/badge.svg
 [bintray]: https://bintray.com/mwz/sbt-plugin-releases/sbt-sonar/_latestVersion
-[bintray-badge]:
-  https://api.bintray.com/packages/mwz/sbt-plugin-releases/sbt-sonar/images/download.svg
-[bintray-downloads]:
-  https://bintray.com/beta/#/mwz/sbt-plugin-releases/sbt-sonar?tab=statistics
-[bintray-badge-downloads]:
-  https://img.shields.io/bintray/dt/mwz/sbt-plugin-releases/sbt-sonar?label=Downloads
-[bintray-stats]:
-  https://bintray.com/beta/#/mwz/sbt-plugin-releases/sbt-sonar?tab=statistics
-[bintray-stats-badge]:
-  https://img.shields.io/badge/dynamic/json.svg?uri=https://bintray.com/statistics/packageStatistics?pkgPath=/mwz/sbt-plugin-releases/sbt-sonar&query=$.totalDownloads&label=Downloads+(last+30+days)&colorB=brightgreen
-[circleci]: https://circleci.com/gh/mwz/sbt-sonar
-[circleci-badge]:
-  https://img.shields.io/circleci/project/github/mwz/sbt-sonar/master.svg?label=Build
 [gitter]: https://gitter.im/sonar-scala/sonar-scala
 [gitter-badge]:
   https://img.shields.io/gitter/room/sonar-scala/sonar-scala.svg?colorB=46BC99&label=Chat
