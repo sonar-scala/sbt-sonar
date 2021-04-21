@@ -36,7 +36,7 @@ developers := List(
   )
 )
 
-crossSbtVersions := Seq("0.13.18", "1.4.9")
+crossSbtVersions := Seq("0.13.18", "1.5.0")
 sbtPlugin := true
 scalacOptions ++= Seq(
   "-encoding",

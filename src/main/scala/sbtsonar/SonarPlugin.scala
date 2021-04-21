@@ -66,7 +66,8 @@ object SonarPlugin extends AutoPlugin {
           "sonar.projectName" -> name.value,
           "sonar.projectKey" -> normalizedName.value,
           "sonar.sourceEncoding" -> "UTF-8",
-          "sonar.scala.version" -> scalaVersion.value
+          "sonar.scala.version" -> scalaVersion.value,
+          "sonar.projectBaseDir" -> baseDirectory.value.toString
         ) ++
         // Base sources directory.
         sourcesDir(baseDirectory.value, (scalaSource in Compile).value) ++

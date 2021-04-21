@@ -6,4 +6,4 @@ val pluginVersion = sys.props.getOrElse(
 
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.0.7")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
-addSbtPlugin("com.github.mwz" % "sbt-sonar" % pluginVersion)
+addSbtPlugin("com.sonar-scala" % "sbt-sonar" % pluginVersion)
