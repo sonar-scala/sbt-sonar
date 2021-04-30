@@ -18,11 +18,11 @@ lazy val sonarSettings = Seq(
 
 lazy val module1 = (project in file("test-1/module1"))
   .settings(baseSettings)
-  .settings(name := "module2nir")
+  .settings(name := "module1nir")
 
 lazy val module2 = (project in file("test-2/module2"))
   .settings(baseSettings)
-  .settings(name := "module1nir")
+  .settings(name := "module2nir")
 
 lazy val multiModule = (project in file("."))
   .aggregate(module1, module2)
