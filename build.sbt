@@ -48,7 +48,7 @@ libraryDependencies ++= List(
   "org.sonarsource.scanner.api" % "sonar-scanner-api" % "2.16.1.361" % Compile,
   "org.scalatest"              %% "scalatest"         % "3.2.9"      % Test,
   "org.scalatestplus"          %% "mockito-1-10"      % "3.1.0.0"    % Test,
-  "org.mockito"                 % "mockito-core"      % "3.10.0"      % Test
+  "org.mockito"                 % "mockito-core"      % "3.11.2"      % Test
 )
 scalafmtOnCompile in ThisBuild :=
   sys.env
